@@ -1,928 +1,1729 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="gl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eclipse Quest: España 2026 - Edición RPG</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;600;700&display=swap');
-        
-        .font-retro { font-family: 'Press Start 2P', monospace; }
-        .font-sans-modern { font-family: 'Space Grotesk', sans-serif; }
-        .no-select { user-select: none; -webkit-user-select: none; }
-        
-        @keyframes questComplete {
-            0% { transform: scale(1); background-color: rgba(15, 23, 42, 0.8); }
-            50% { transform: scale(1.05); background-color: rgba(16, 185, 129, 0.8); box-shadow: 0 0 20px rgba(16, 185, 129, 0.5); }
-            100% { transform: scale(1); background-color: rgba(15, 23, 42, 0.8); }
-        }
-        .quest-animating { animation: questComplete 1.5s ease-in-out; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eclipse 2026 · Observar, Medir e Comunicar — CPR Tirso de Molina</title>
+<meta name="description" content="Proxecto de divulgación científica do alumnado de 3º-4º ESO do CPR Tirso de Molina (Ferrol) para a convocatoria Retos STEM — Polos Eclipsados 2026 da Xunta de Galicia.">
 
-        @keyframes pulse-space {
-            0%, 100% { opacity: 1; transform: translateY(0); }
-            50% { opacity: 0.6; transform: translateY(-3px); }
-        }
-        .animate-pulse-space { animation: pulse-space 1.5s infinite; }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 
-        @keyframes slide { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+<style>
+  :root {
+    /* Colour palette — Tirso institucional */
+    --paper: #FAF8F2;
+    --paper-warm: #F4F1E8;
+    --paper-line: #E8E3D5;
+    --ink: #1A1A1F;
+    --ink-soft: #3D3D47;
+    --ink-mute: #6C6C7A;
+    --ink-faint: #A8A89A;
+    
+    --tirso-blue: #007BC4;
+    --tirso-blue-dark: #005A91;
+    --tirso-blue-pale: #E5F1F9;
+    --tirso-blue-line: #B8DAEC;
+    
+    --accent-warm: #C45200;   /* warm complement, used sparingly */
+    
+    /* Typography scale */
+    --serif-display: 'Cormorant Garamond', 'EB Garamond', Georgia, serif;
+    --serif-body: 'Crimson Pro', Georgia, serif;
+    --mono: 'JetBrains Mono', 'Courier New', monospace;
+  }
+  
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  html { scroll-behavior: smooth; }
+  
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif-body);
+    font-size: 18px;
+    line-height: 1.65;
+    font-feature-settings: "kern", "liga", "onum";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  
+  /* Subtle paper texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.025;
+    z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  
+  body > * { position: relative; z-index: 1; }
 
-        canvas {
-            image-rendering: -moz-crisp-edges;
-            image-rendering: -webkit-optimize-contrast;
-            image-rendering: crisp-edges;
-            image-rendering: pixelated;
-        }
-    </style>
+  /* ============= HEADER ============= */
+  header {
+    border-bottom: 1px solid var(--paper-line);
+    padding: 24px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--paper);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(10px);
+    background: rgba(250, 248, 242, 0.92);
+  }
+  
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .header-mark {
+    height: 36px;
+    width: auto;
+  }
+  
+  .header-mark svg {
+    height: 100%;
+    width: auto;
+  }
+  
+  .header-divider {
+    width: 1px;
+    height: 28px;
+    background: var(--paper-line);
+  }
+  
+  .header-title-block {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .header-school {
+    font-family: var(--serif-display);
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+  
+  .header-location {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-top: 2px;
+  }
+  
+  .header-meta {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    text-align: right;
+  }
+  
+  .header-meta-line {
+    color: var(--tirso-blue);
+    font-weight: 500;
+  }
+  
+  @media (max-width: 720px) {
+    header { padding: 16px 20px; flex-direction: column; gap: 12px; align-items: flex-start; }
+    .header-mark { height: 30px; }
+    .header-meta { text-align: left; font-size: 0.65rem; }
+  }
+  
+  /* ============= HERO ============= */
+  .hero {
+    padding: 100px 40px 80px;
+    max-width: 1240px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.4em;
+    color: var(--tirso-blue);
+    margin-bottom: 32px;
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .hero-eyebrow::before, .hero-eyebrow::after {
+    content: '';
+    width: 36px;
+    height: 1px;
+    background: var(--tirso-blue);
+    opacity: 0.4;
+  }
+  
+  h1.hero-title {
+    font-family: var(--serif-display);
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    margin-bottom: 28px;
+    max-width: 920px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  h1 .accent {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--tirso-blue);
+  }
+  
+  .hero-subtitle {
+    font-family: var(--serif-display);
+    font-size: clamp(1.1rem, 2.2vw, 1.4rem);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--ink-soft);
+    max-width: 640px;
+    margin: 0 auto 56px;
+    line-height: 1.4;
+  }
+  
+  .hero-meta-line {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .hero-meta-line .sep {
+    color: var(--tirso-blue);
+  }
+  
+  /* Logo strip under hero */
+  .hero-logos {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 44px;
+    flex-wrap: wrap;
+    margin-top: 56px;
+    padding-top: 40px;
+    border-top: 1px solid var(--paper-line);
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .hero-logos img {
+    height: 44px;
+    width: auto;
+    object-fit: contain;
+    opacity: 0.9;
+    transition: opacity 0.3s ease;
+  }
+  
+  .hero-logos img:hover { opacity: 1; }
+  
+  .hero-logos .logo-chip {
+    background: var(--ink);
+    padding: 8px 14px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .hero-logos .logo-chip img { height: 32px; opacity: 1; }
+  
+  @media (max-width: 600px) {
+    .hero-logos { gap: 28px; }
+    .hero-logos img { height: 34px; }
+    .hero-logos .logo-chip img { height: 26px; }
+  }
+  
+  /* ============= COUNTDOWN ============= */
+  .countdown-section {
+    padding: 60px 40px 100px;
+    text-align: center;
+    border-top: 1px solid var(--paper-line);
+    margin-top: 40px;
+  }
+  
+  .countdown-label-top {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    margin-bottom: 36px;
+  }
+  
+  .countdown-label-top strong {
+    color: var(--tirso-blue);
+    font-weight: 500;
+  }
+  
+  .countdown {
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    align-items: baseline;
+    flex-wrap: wrap;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .countdown-unit {
+    text-align: center;
+    min-width: 90px;
+  }
+  
+  .countdown-num {
+    font-family: var(--serif-display);
+    font-size: clamp(3.2rem, 8vw, 5rem);
+    font-weight: 300;
+    color: var(--tirso-blue);
+    line-height: 1;
+    display: block;
+    font-feature-settings: "tnum";
+    letter-spacing: -0.02em;
+  }
+  
+  .countdown-label {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: var(--ink-mute);
+    margin-top: 14px;
+  }
+  
+  .countdown-sep {
+    font-family: var(--serif-display);
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    color: var(--tirso-blue);
+    font-weight: 200;
+    opacity: 0.3;
+    align-self: center;
+  }
+  
+  /* ============= SECTIONS ============= */
+  section.block {
+    padding: 100px 40px;
+    max-width: 1100px;
+    margin: 0 auto;
+    border-top: 1px solid var(--paper-line);
+  }
+  
+  .block-header {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 40px;
+    margin-bottom: 60px;
+    align-items: start;
+  }
+  
+  @media (max-width: 768px) {
+    .block-header { grid-template-columns: 1fr; gap: 12px; margin-bottom: 40px; }
+    section.block { padding: 60px 24px; }
+  }
+  
+  .block-num {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--tirso-blue);
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    padding-top: 16px;
+    border-top: 2px solid var(--tirso-blue);
+    display: inline-block;
+    align-self: start;
+  }
+  
+  h2 {
+    font-family: var(--serif-display);
+    font-size: clamp(2rem, 4.5vw, 3.2rem);
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    max-width: 750px;
+  }
+  
+  h2 em {
+    font-style: italic;
+    color: var(--tirso-blue);
+    font-weight: 400;
+  }
+  
+  h3 {
+    font-family: var(--serif-display);
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 12px;
+    line-height: 1.15;
+  }
+  
+  .lead {
+    font-family: var(--serif-display);
+    font-size: 1.3rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    margin-bottom: 32px;
+    font-style: italic;
+    font-weight: 400;
+    max-width: 720px;
+  }
+  
+  p {
+    margin-bottom: 16px;
+    color: var(--ink-soft);
+    max-width: 720px;
+  }
+  
+  /* ============= THREE PILLARS ============= */
+  .pillars {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    margin-top: 48px;
+  }
+  
+  @media (max-width: 768px) {
+    .pillars { grid-template-columns: 1fr; }
+  }
+  
+  .pillar {
+    padding: 40px 32px;
+    border: 1px solid var(--paper-line);
+    background: var(--paper);
+    transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    position: relative;
+  }
+  
+  .pillar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--tirso-blue);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+  
+  .pillar:hover {
+    border-color: var(--tirso-blue-line);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px -16px rgba(0, 123, 196, 0.2);
+  }
+  
+  .pillar:hover::before { transform: scaleX(1); }
+  
+  .pillar-num {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--tirso-blue);
+    letter-spacing: 0.25em;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    text-transform: uppercase;
+  }
+  
+  .pillar-icon {
+    width: 36px;
+    height: 36px;
+    margin-bottom: 24px;
+    color: var(--tirso-blue);
+    stroke-width: 1.2;
+  }
+  
+  .pillar h3 {
+    font-size: 1.55rem;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+  
+  .pillar h3 em {
+    font-style: italic;
+    color: var(--tirso-blue);
+  }
+  
+  .pillar-desc {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    font-family: var(--serif-body);
+  }
+  
+  /* ============= VIDEOS ============= */
+  .videos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 48px;
+  }
+  
+  @media (max-width: 900px) {
+    .videos-grid { grid-template-columns: 1fr; }
+  }
+  
+  .video-card {
+    border: 1px solid var(--paper-line);
+    background: var(--paper);
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  
+  .video-card:hover {
+    border-color: var(--tirso-blue-line);
+  }
+  
+  .video-placeholder {
+    aspect-ratio: 16/9;
+    background: var(--paper-warm);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    border-bottom: 1px solid var(--paper-line);
+    gap: 16px;
+  }
+  
+  .video-placeholder::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(45deg, transparent 49%, var(--paper-line) 49%, var(--paper-line) 51%, transparent 51%);
+    background-size: 24px 24px;
+    opacity: 0.5;
+  }
+  
+  .video-placeholder svg {
+    width: 48px;
+    height: 48px;
+    color: var(--tirso-blue);
+    opacity: 0.4;
+    z-index: 1;
+  }
+  
+  .video-pending {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    color: var(--tirso-blue);
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border: 1px solid var(--tirso-blue);
+    background: var(--paper);
+    z-index: 1;
+  }
+  
+  /* Embedded YouTube iframe inside placeholder */
+  .video-embed {
+    aspect-ratio: 16/9;
+    border-bottom: 1px solid var(--paper-line);
+    background: var(--ink);
+  }
+  .video-embed iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+  
+  /* Video subgroup (by line of work) */
+  .video-group { margin-top: 56px; }
+  .video-group:first-of-type { margin-top: 48px; }
+  
+  .video-group-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--paper-line);
+  }
+  
+  .video-group-icon {
+    width: 26px;
+    height: 26px;
+    color: var(--tirso-blue);
+    stroke-width: 1.3;
+    flex-shrink: 0;
+  }
+  
+  .video-group-title {
+    font-family: var(--serif-display);
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .video-group-title em { font-style: italic; color: var(--tirso-blue); font-weight: 400; }
+  
+  .video-group-count {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin-left: auto;
+  }
+  
+  /* ============= WORK LINE (liña de traballo integrada) ============= */
+  .workline {
+    margin-top: 48px;
+    padding-top: 36px;
+    border-top: 1px solid var(--paper-line);
+  }
+  .workline:first-of-type { border-top: none; }
+  
+  .workline-head {
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    gap: 22px;
+    align-items: start;
+    margin-bottom: 8px;
+  }
+  
+  .workline-num {
+    font-family: var(--serif-display);
+    font-size: 3rem;
+    font-weight: 300;
+    line-height: 0.9;
+    color: var(--tirso-blue-line);
+    font-feature-settings: "tnum";
+  }
+  
+  .workline-icon {
+    width: 32px;
+    height: 32px;
+    color: var(--tirso-blue);
+    stroke-width: 1.3;
+    margin-top: 8px;
+  }
+  
+  .workline-label {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--tirso-blue);
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    margin-bottom: 6px;
+  }
+  
+  .workline-title {
+    font-family: var(--serif-display);
+    font-size: 1.7rem;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .workline-title em { font-style: italic; color: var(--tirso-blue); font-weight: 400; }
+  
+  .workline-desc {
+    font-family: var(--serif-body);
+    font-size: 1rem;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    max-width: 760px;
+  }
+  
+  @media (max-width: 720px) {
+    .workline-head { grid-template-columns: auto 1fr; gap: 14px; }
+    .workline-num { grid-row: span 1; font-size: 2.2rem; }
+    .workline-icon { display: none; }
+  }
+  
+  /* ============= PRODUCTS (live previews) ============= */
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
+    margin-top: 48px;
+  }
+  
+  @media (max-width: 820px) {
+    .products-grid { grid-template-columns: 1fr; }
+  }
+  
+  .product-card {
+    border: 1px solid var(--paper-line);
+    background: var(--paper);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  
+  .product-card:hover {
+    border-color: var(--tirso-blue-line);
+    box-shadow: 0 18px 40px -22px rgba(0, 123, 196, 0.3);
+    transform: translateY(-3px);
+  }
+  
+  .product-card.wide { grid-column: 1 / -1; }
+  .product-card.wide .product-preview { aspect-ratio: 21/9; }
+  
+  .product-preview {
+    position: relative;
+    aspect-ratio: 16/10;
+    background: var(--paper-warm);
+    border-bottom: 1px solid var(--paper-line);
+    overflow: hidden;
+  }
+  
+  .product-preview iframe {
+    position: absolute;
+    top: 0; left: 0;
+    width: 142.857%;
+    height: 142.857%;
+    transform: scale(0.7);
+    transform-origin: 0 0;
+    border: 0;
+    pointer-events: none;       /* só vista previa — preme "Abrir" para interactuar */
+    background: #fff;
+  }
+  
+  .product-tag {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    z-index: 2;
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--tirso-blue);
+    padding: 5px 12px;
+    border-radius: 2px;
+  }
+  
+  .product-body {
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  
+  .product-title {
+    font-family: var(--serif-display);
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.15;
+    margin-bottom: 10px;
+  }
+  
+  .product-title em { font-style: italic; color: var(--tirso-blue); font-weight: 400; }
+  
+  .product-desc {
+    font-family: var(--serif-body);
+    font-size: 1rem;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    margin-bottom: 24px;
+    flex: 1;
+  }
+  
+  .product-open {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    align-self: flex-start;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--tirso-blue);
+    text-decoration: none;
+    padding: 13px 24px;
+    transition: all 0.25s ease;
+  }
+  
+  .product-open:hover {
+    background: var(--tirso-blue-dark);
+    gap: 16px;
+  }
+  
+  .product-open svg { width: 15px; height: 15px; stroke-width: 2; }
+  
+  /* iVoox radio embed */
+  .radio-card .product-body { padding-bottom: 0; }
+  .radio-embed { padding: 0 28px 28px; }
+  .radio-embed iframe {
+    width: 100%;
+    border: 1px solid var(--paper-line);
+    border-radius: 4px;
+  }
+  
+  /* Vertical short video inside a product card */
+  .short-embed {
+    padding: 0 28px 28px;
+    display: flex;
+    justify-content: center;
+  }
+  .short-embed iframe {
+    width: 260px;
+    max-width: 100%;
+    aspect-ratio: 9/16;
+    border: 1px solid var(--paper-line);
+    border-radius: 8px;
+    background: var(--ink);
+  }
+  .short-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    color: var(--tirso-blue);
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    padding: 0 28px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .short-label::before {
+    content: '';
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--tirso-blue);
+  }
+  
+  .video-info {
+    padding: 22px;
+  }
+  
+  .video-title {
+    font-family: var(--serif-display);
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+  
+  .video-meta {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+  
+  /* ============= RESOURCE LINKS ============= */
+  .resources {
+    margin-top: 48px;
+    border-top: 1px solid var(--paper-line);
+  }
+  
+  .resource-link {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    align-items: center;
+    gap: 28px;
+    padding: 28px 8px;
+    text-decoration: none;
+    color: var(--ink);
+    border-bottom: 1px solid var(--paper-line);
+    transition: all 0.3s ease;
+    position: relative;
+  }
+  
+  .resource-link:hover {
+    background: var(--tirso-blue-pale);
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  
+  .resource-icon {
+    width: 28px;
+    height: 28px;
+    color: var(--tirso-blue);
+    stroke-width: 1.3;
+  }
+  
+  .resource-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    margin-bottom: 4px;
+  }
+  
+  .resource-name {
+    font-family: var(--serif-display);
+    font-size: 1.4rem;
+    color: var(--ink);
+    font-weight: 500;
+    line-height: 1.15;
+  }
+  
+  .resource-name em {
+    font-style: italic;
+    color: var(--tirso-blue);
+    font-weight: 400;
+  }
+  
+  .resource-url {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--ink-mute);
+    letter-spacing: 0.05em;
+  }
+  
+  .resource-arrow {
+    color: var(--tirso-blue);
+    transition: transform 0.3s ease;
+    font-size: 1.5rem;
+    font-family: var(--serif-display);
+  }
+  
+  .resource-link:hover .resource-arrow {
+    transform: translateX(8px);
+  }
+  
+  @media (max-width: 768px) {
+    .resource-link { grid-template-columns: auto 1fr auto; gap: 16px; }
+    .resource-url { display: none; }
+    .resource-name { font-size: 1.15rem; }
+  }
+  
+  /* ============= MEMORIA TABLE ============= */
+  .memory-grid {
+    margin-top: 48px;
+    border-top: 1px solid var(--paper-line);
+  }
+  
+  .memory-row {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 40px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--paper-line);
+    align-items: start;
+  }
+  
+  @media (max-width: 720px) {
+    .memory-row {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+  }
+  
+  .memory-key {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--tirso-blue);
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    padding-top: 6px;
+    font-weight: 500;
+  }
+  
+  .memory-value {
+    color: var(--ink);
+    line-height: 1.6;
+    font-family: var(--serif-body);
+    font-size: 1.05rem;
+  }
+  
+  .memory-value strong {
+    color: var(--tirso-blue);
+    font-weight: 600;
+  }
+  
+  /* ============= MATERIALS LIST ============= */
+  .materials-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 36px;
+  }
+  
+  @media (max-width: 768px) {
+    .materials-list { grid-template-columns: 1fr; }
+  }
+  
+  .materials-list li {
+    padding: 16px 22px;
+    background: var(--paper);
+    border-left: 2px solid var(--tirso-blue);
+    border-top: 1px solid var(--paper-line);
+    border-right: 1px solid var(--paper-line);
+    border-bottom: 1px solid var(--paper-line);
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--ink);
+    transition: all 0.3s ease;
+  }
+  
+  .materials-list li:hover {
+    border-left-width: 4px;
+    background: var(--tirso-blue-pale);
+    padding-left: 24px;
+  }
+  
+  /* ============= TEAM CARD ============= */
+  .team-card {
+    background: var(--paper);
+    border: 1px solid var(--paper-line);
+    padding: 56px;
+    margin-top: 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    position: relative;
+  }
+  
+  @media (max-width: 768px) {
+    .team-card {
+      grid-template-columns: 1fr;
+      padding: 32px 24px;
+      gap: 32px;
+    }
+  }
+  
+  .team-card::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 0;
+    width: 80px;
+    height: 3px;
+    background: var(--tirso-blue);
+  }
+  
+  .team-block .team-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    color: var(--tirso-blue);
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    margin-bottom: 14px;
+  }
+  
+  .team-block .team-name {
+    font-family: var(--serif-display);
+    font-size: 1.7rem;
+    color: var(--ink);
+    font-weight: 500;
+    line-height: 1.15;
+    margin-bottom: 10px;
+  }
+  
+  .team-block .team-detail {
+    font-family: var(--serif-body);
+    font-size: 1rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  
+  /* ============= QUOTE ============= */
+  .quote {
+    margin: 0;
+    padding: 100px 40px;
+    background: var(--paper-warm);
+    border-top: 1px solid var(--paper-line);
+    border-bottom: 1px solid var(--paper-line);
+    text-align: center;
+  }
+  
+  .quote-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+  }
+  
+  .quote-mark {
+    font-family: var(--serif-display);
+    font-size: 6rem;
+    color: var(--tirso-blue);
+    opacity: 0.25;
+    line-height: 0.6;
+    height: 50px;
+    font-style: italic;
+  }
+  
+  .quote-text {
+    font-family: var(--serif-display);
+    font-style: italic;
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    font-weight: 400;
+    color: var(--ink);
+    line-height: 1.4;
+    margin-bottom: 24px;
+  }
+  
+  .quote-attr {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+  }
+  
+  /* ============= INSTITUTIONAL FOOTER ============= */
+  .institutional {
+    padding: 80px 40px;
+    border-top: 1px solid var(--paper-line);
+    background: var(--paper);
+  }
+  
+  .institutional-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  
+  .institutional-label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  
+  .logos-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 60px;
+    flex-wrap: wrap;
+    margin-bottom: 60px;
+  }
+  
+  .logo-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    max-width: 220px;
+  }
+  
+  .logo-img {
+    height: 80px;
+    width: auto;
+    object-fit: contain;
+    filter: none;
+  }
+  
+  .logo-img.tirso {
+    height: 60px;
+  }
+  
+  .logo-img.polos {
+    height: 80px;
+    background: var(--ink);
+    padding: 8px 16px;
+    border-radius: 4px;
+  }
+  
+  .logo-label {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    text-align: center;
+  }
+  
+  /* License */
+  .license-box {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 32px 40px;
+    border: 1px solid var(--paper-line);
+    background: var(--paper-warm);
+    text-align: center;
+  }
+  
+  .license-icon {
+    color: var(--tirso-blue);
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+    display: block;
+    font-family: var(--serif-display);
+  }
+  
+  .license-title {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--tirso-blue);
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+  
+  .license-text {
+    font-family: var(--serif-body);
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  
+  /* Last footer */
+  footer.bottom {
+    padding: 40px;
+    text-align: center;
+    border-top: 1px solid var(--paper-line);
+    background: var(--paper);
+  }
+  
+  .bottom-text {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    line-height: 2;
+  }
+  
+  .bottom-text a {
+    color: var(--tirso-blue);
+    text-decoration: none;
+  }
+  
+  .bottom-text a:hover {
+    color: var(--tirso-blue-dark);
+    text-decoration: underline;
+  }
+  
+  .bottom-dot {
+    color: var(--tirso-blue);
+    margin: 0 16px;
+    opacity: 0.4;
+  }
+  
+  /* ============= ECLIPSE GLYPH (subtle decoration) ============= */
+  .eclipse-glyph {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 32px;
+    position: relative;
+  }
+  
+  .eclipse-glyph::before, .eclipse-glyph::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+  }
+  
+  .eclipse-glyph::before {
+    inset: 0;
+    background: var(--tirso-blue);
+  }
+  
+  .eclipse-glyph::after {
+    inset: 0;
+    background: var(--paper);
+    transform: translate(18%, 0);
+  }
+  
+  /* ============= INTRO PARAGRAPH WITH DROPCAP ============= */
+  .intro-prose {
+    max-width: 720px;
+  }
+  
+  .intro-prose p:first-of-type::first-letter {
+    font-family: var(--serif-display);
+    font-size: 4.5rem;
+    font-weight: 500;
+    float: left;
+    line-height: 0.9;
+    padding: 6px 12px 0 0;
+    color: var(--tirso-blue);
+    font-style: italic;
+  }
+  
+  .team-block .team-detail a {
+    color: var(--tirso-blue);
+    text-decoration: none;
+  }
+  .team-block .team-detail a:hover { text-decoration: underline; }
+  
+  /* ============= TEAM PHOTO ============= */
+  .team-photo-wrap { margin-top: 40px; }
+  .team-photo {
+    width: 100%;
+    border: 1px solid var(--paper-line);
+    display: block;
+  }
+  .team-photo-caption {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin-top: 12px;
+    text-align: center;
+  }
+  .team-photo-placeholder {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: var(--paper-warm);
+    border: 1px dashed var(--tirso-blue-line);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: var(--ink-mute);
+  }
+  .team-photo-placeholder svg { width: 44px; height: 44px; color: var(--tirso-blue); opacity: 0.5; }
+  .team-photo-placeholder span {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  
+</style>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans-modern h-screen w-screen overflow-hidden flex flex-col no-select">
+<body>
 
-    <!-- MENÚ PRINCIPAL -->
-    <div id="main-menu" class="absolute inset-0 z-[100] flex flex-col items-center justify-center bg-gradient-to-b from-slate-950 via-indigo-950 to-slate-950 px-4">
-        <div class="relative w-32 h-32 mb-6 flex items-center justify-center">
-            <div class="absolute w-24 h-24 bg-amber-400 rounded-full blur-md animate-pulse"></div>
-            <div class="absolute w-24 h-24 bg-slate-950 rounded-full translate-x-3"></div>
-            <div class="absolute text-4xl font-bold font-retro text-amber-300">2026</div>
-        </div>
-        <h1 class="text-4xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-orange-400 to-amber-200 text-center drop-shadow-lg mb-2 text-wrap">
-            ECLIPSE QUEST 3.5
-        </h1>
-        <p class="text-indigo-300 text-xs md:text-sm tracking-widest font-retro mb-10 text-center">GUÍA TURÍSTICO • AVENTURA ESPAÑA • RPG</p>
-
-        <div class="flex flex-col gap-4 w-full max-w-sm">
-            <button onclick="startGame()" class="w-full py-4 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-slate-950 font-bold font-retro text-base rounded-xl shadow-lg border-b-4 border-orange-800 transition-transform active:translate-y-1">
-                ¡JUGAR!
-            </button>
-            <button onclick="openModal('modal-ayuda')" class="w-full py-3 bg-slate-800/80 hover:bg-slate-700 text-slate-100 font-bold text-lg rounded-xl flex items-center justify-center gap-2 border border-slate-700">
-                <i data-lucide="help-circle" class="w-6 h-6 text-amber-400"></i> ¿Cómo Jugar?
-            </button>
-            <button onclick="openModal('modal-creditos')" class="py-3 bg-slate-900/90 hover:bg-slate-800 text-slate-300 font-semibold rounded-xl flex items-center justify-center gap-1.5 border border-slate-800">
-                <i data-lucide="info" class="w-5 h-5 text-slate-400"></i> Créditos y Novedades
-            </button>
-        </div>
+<!-- ============ STICKY HEADER ============ -->
+<header>
+  <div class="header-brand">
+    <div class="header-mark">
+      <!-- Tirso de Molina mark (SVG inline for crisp scaling) -->
+      <svg viewBox="0 0 1190.55 1700.79" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#007BC4" d="M0,0v1700.79h1190.55V0H0z M552.76,141.74h28.35V113.4h28.35v28.35h28.35v28.35h-28.35v28.35H581.1v-28.35 h-28.35V141.74z M340.16,1360.63h-56.69v56.69h-56.69v-56.69h-56.69v-56.69h56.69v-56.69h56.69v56.69h56.69V1360.63z M340.16,1020.47h-56.69v56.69h-56.69v-56.69h-56.69v-56.69h56.69v-56.69h56.69v56.69h56.69V1020.47z M340.16,680.31h-56.69v56.69 h-56.69v-56.69h-56.69v-56.69h56.69v-56.69h56.69v56.69h56.69V680.31z M624.79,1273.4c-0.77,10.08-1.16,20.26-1.16,30.53 c0,84.32,26.3,162.49,71.14,226.77H495.79c44.84-64.28,71.14-142.45,71.14-226.77c0-10.27-0.4-20.46-1.16-30.53 c-95.59-14.25-168.91-96.68-168.91-196.24H793.7C793.7,1176.72,720.38,1259.15,624.79,1273.4z M680.32,623.62v56.69h-56.69v56.69 h-56.69v-56.69h-56.69v-56.69h56.69v-56.69h56.69v56.69H680.32z M595.28,793.7c62.62,0,113.39,50.76,113.39,113.39 c0,62.62-50.76,113.39-113.39,113.39c-62.62,0-113.39-50.76-113.39-113.39C481.89,844.47,532.65,793.7,595.28,793.7z M793.7,496.06 H396.85v-42.52H793.7V496.06z M833.78,381.32l-20.84,29.71h-52.96l37.92-54.68c6.41-9.34,8.69-21.62,8.69-29.28 c0-13.35-4.32-24.57-12.85-33.36c-10.19-10.53-22.75-15.87-37.36-15.87c-6.27,0-10.74,0.59-10.74,0.59l-0.13-0.21 c3.17,11.29,4.86,22.18,4.86,32.4c0,18.38-1.99,33.99-11.72,50.47l-29.51,49.96h-51.59l42-71.28c3.92-6.56,6.97-19.36,6.97-29.14 c0-14.6-4.55-26.38-13.91-35.99c-10.93-11.3-23.51-17.03-37.4-17.03c-17.55,0-30.21,5.04-38.68,15.4v138.05h-42.51V272.98 c-8.46-10.36-21.13-15.4-38.68-15.4c-13.9,0-26.47,5.73-37.4,17.03c-9.36,9.61-13.91,21.39-13.91,35.99 c0,9.79,3.06,22.58,6.97,29.14l42,71.28h-51.59l-29.51-49.96c-9.73-16.47-11.72-32.09-11.72-50.47c0-10.22,1.69-21.1,4.86-32.4 l-0.13,0.21c0,0-4.47-0.59-10.74-0.59c-14.6,0-27.17,5.34-37.36,15.87c-8.53,8.79-12.85,20.01-12.85,33.36 c0,7.67,2.28,19.94,8.69,29.28l37.92,54.68h-52.96l-20.83-29.71c-11.34-16.37-16.62-33.61-16.62-54.25 c0-26.58,9.34-48.73,27.64-65.68c18.36-18.94,40.7-28.54,66.38-28.54c10.96,0,22.78,2.23,35.16,6.41c0.95-1.06,1.9-2.12,3-3.07 c16.81-15.65,38-23.58,63.01-23.58c21.66,0,41.82,6.65,59.93,19.78c18.12-13.13,38.27-19.78,59.93-19.78 c25.01,0,46.2,7.93,63.01,23.58c1.09,0.95,2.05,2.01,3,3.07c12.38-4.18,24.2-6.41,35.16-6.41c25.68,0,48.02,9.6,66.38,28.54 c18.3,16.95,27.64,39.1,27.64,65.68C850.39,347.7,845.11,364.95,833.78,381.32z M1020.47,1360.63h-56.69v56.69h-56.69v-56.69h-56.69 v-56.69h56.69v-56.69h56.69v56.69h56.69V1360.63z M1020.47,1020.47h-56.69v56.69h-56.69v-56.69h-56.69v-56.69h56.69v-56.69h56.69 v56.69h56.69V1020.47z M1020.47,680.31h-56.69v56.69h-56.69v-56.69h-56.69v-56.69h56.69v-56.69h56.69v56.69h56.69V680.31z"/>
+      </svg>
     </div>
-
-    <!-- MODALES DE INICIO -->
-    <div id="modal-ayuda" class="hidden absolute inset-0 z-[110] bg-black/85 flex items-center justify-center p-4">
-        <div class="bg-slate-900 border-2 border-slate-700 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
-            <div class="p-4 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
-                <h3 class="text-xl font-bold text-amber-400 flex items-center gap-2"><i data-lucide="help-circle"></i> Manual de Guía del Eclipse</h3>
-                <button onclick="closeModal('modal-ayuda')" class="text-slate-400 hover:text-white"><i data-lucide="x"></i></button>
-            </div>
-            <div class="p-6 space-y-4 max-h-[60vh] overflow-y-auto text-slate-200 text-sm md:text-base leading-relaxed">
-                <p><strong>Novedades de la Edición 3.5:</strong> ¡Disfruta de preguntas de guía turística aleatorias y explora todo el pueblo!</p>
-                <ul class="space-y-3 pl-2">
-                    <li><span class="text-amber-400 font-bold">💼 Trabajo de Guía Variado:</span> ¡Las preguntas ya no se repiten! El sistema selecciona preguntas al azar.</li>
-                    <li><span class="text-amber-400 font-bold">🗼 El Burj Khalifa ($100k):</span> Cómpralo en el catálogo científico reuniendo fondos y observa el eclipse desde la cima.</li>
-                    <li><span class="text-amber-400 font-bold">🎮 Interactuar:</span> Acércate a las personas u objetos. Al iluminarse, presiona <kbd class="px-2 bg-slate-800 rounded">ESPACIO</kbd>.</li>
-                </ul>
-            </div>
-            <div class="p-4 bg-slate-950 text-right">
-                <button onclick="closeModal('modal-ayuda')" class="px-6 py-2 bg-amber-500 text-black font-bold rounded-xl">Entendido</button>
-            </div>
-        </div>
+    <div class="header-divider"></div>
+    <div class="header-title-block">
+      <span class="header-school">CPR Tirso de Molina</span>
+      <span class="header-location">Ferrol · Galicia</span>
     </div>
+  </div>
+  
+  <div class="header-meta">
+    <div>Retos STEM · Polos Eclipsados</div>
+    <div class="header-meta-line">Convocatoria 2026 · Xunta de Galicia</div>
+  </div>
+</header>
 
-    <div id="modal-creditos" class="hidden absolute inset-0 z-[110] bg-black/85 flex items-center justify-center p-4">
-        <div class="bg-slate-900 border-2 border-slate-700 rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl">
-            <div class="p-4 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
-                <h3 class="text-xl font-bold text-slate-100 flex items-center gap-2"><i data-lucide="info"></i> Créditos V3.5</h3>
-                <button onclick="closeModal('modal-creditos')" class="text-slate-400"><i data-lucide="x"></i></button>
-            </div>
-            <div class="p-6 text-center space-y-3 text-sm text-slate-300">
-                <p class="text-amber-400 font-bold text-lg">Actualizaciones:</p>
-                <ul class="text-left list-disc pl-5 space-y-1">
-                    <li><strong>Trabajo Honrado:</strong> Oficina de guía turística con preguntas científicas.</li>
-                    <li><strong>Cámara:</strong> Suave scroll centrado píxel a píxel en el jugador.</li>
-                    <li><strong>Burj Khalifa:</strong> Adquisición por $100k con final VIP exclusivo.</li>
-                    <li><strong>Estabilidad:</strong> Motor depurado sin variables duplicadas.</li>
-                </ul>
-            </div>
-        </div>
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <p class="hero-eyebrow">Proxecto Retos STEM · 2026</p>
+  
+  <h1 class="hero-title">
+    Eclipse 2026.<br>
+    Observar, <span class="accent">medir</span> e comunicar.
+  </h1>
+  
+  <p class="hero-subtitle">Un proxecto científico, tecnolóxico e radiofónico do alumnado de 3º e 4º de ESO, arredor da eclipse solar total do 12 de agosto de 2026.</p>
+  
+  <div class="hero-meta-line">
+    <span>CPR Tirso de Molina</span>
+    <span class="sep">·</span>
+    <span>Ferrol</span>
+    <span class="sep">·</span>
+    <span>Polo Creativo</span>
+  </div>
+  
+  <div class="hero-logos">
+    <span class="logo-chip"><img src="assets/tirso-logo.png" alt="CPR Tirso de Molina"></span>
+    <img src="assets/eclipse-galicia.jpeg" alt="Eclipse Galicia 12.08.26">
+    <span class="logo-chip"><img src="assets/polos-creativos.png" alt="Polos Creativos · Xunta de Galicia"></span>
+  </div>
+</section>
+
+<!-- ============ COUNTDOWN ============ -->
+<section class="countdown-section">
+  <div class="eclipse-glyph" aria-hidden="true"></div>
+  <p class="countdown-label-top">Conta atrás ata a <strong>totalidade</strong> · 12 de agosto de 2026, 20:30 CEST</p>
+  
+  <div class="countdown" id="countdown" role="timer" aria-live="polite">
+    <div class="countdown-unit">
+      <span class="countdown-num" id="cd-days">—</span>
+      <span class="countdown-label">días</span>
     </div>
-
-    <!-- UI DEL JUEGO ACTIVO -->
-    <div id="game-ui" class="hidden absolute inset-0 z-10">
-        <div class="w-full h-full bg-slate-900 relative">
-            <canvas id="gameCanvas" class="w-full h-full object-cover"></canvas>
-            
-            <!-- HUD DINERO -->
-            <div class="absolute top-4 left-4 flex flex-col gap-2 z-20 font-sans-modern">
-                <div class="bg-slate-900/80 border-2 border-emerald-500/50 rounded-xl px-4 py-2 flex items-center gap-3 backdrop-blur-sm shadow-lg">
-                    <span class="p-1.5 bg-emerald-950 rounded-lg"><i data-lucide="coins" class="w-5 h-5 text-emerald-400"></i></span>
-                    <div>
-                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Fondos</p>
-                        <p id="hud-money" class="font-retro text-sm text-emerald-400">$0</p>
-                    </div>
-                </div>
-                <div id="dialogue-box" class="hidden bg-slate-900/90 border border-slate-700 rounded-xl p-3 text-sm text-slate-200 max-w-xs shadow-lg backdrop-blur-sm transition-opacity duration-300"></div>
-            </div>
-
-            <!-- HUD MISIONES Y PAUSA -->
-            <div class="absolute top-4 right-4 flex flex-col items-end gap-3 z-20 font-sans-modern">
-                <button onclick="openPauseMenu()" class="p-3 bg-slate-900/80 border-2 border-slate-700 hover:border-slate-500 rounded-xl text-slate-200 backdrop-blur-sm shadow-lg transition-all">
-                    <i data-lucide="menu" class="w-5 h-5"></i>
-                </button>
-                <div id="quest-tracker" class="bg-slate-900/80 border-2 border-amber-500/30 rounded-xl p-4 w-64 md:w-72 shadow-lg backdrop-blur-sm transition-all duration-500">
-                    <div class="flex items-center gap-2 mb-2">
-                        <div class="w-2.5 h-2.5 bg-amber-500 rounded-full animate-pulse"></div>
-                        <span class="font-retro text-[9px] text-amber-300 tracking-wider">MISIÓN ACTUAL</span>
-                    </div>
-                    <div class="flex items-start gap-3">
-                        <div id="quest-icon" class="p-2 bg-slate-800 rounded-lg text-slate-300"><i data-lucide="search" class="w-5 h-5"></i></div>
-                        <div>
-                            <p id="quest-title" class="font-bold text-slate-100 text-sm leading-tight">Encuentra tu cartera</p>
-                            <p id="quest-desc" class="text-xs text-slate-400 mt-0.5">En tu casa</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- HUD BOTONES INFERIORES -->
-            <div class="absolute bottom-4 right-4 flex gap-3 z-20 font-sans-modern">
-                <button onclick="openCityMap()" class="px-4 py-3 bg-indigo-900/80 border-2 border-indigo-500/50 hover:bg-indigo-800 rounded-xl text-indigo-100 shadow-lg backdrop-blur-sm flex items-center gap-2 font-bold text-sm transition-all">
-                    <i data-lucide="map-pin" class="w-5 h-5"></i> <span class="hidden md:inline">Mapa (M)</span>
-                </button>
-                <button onclick="emergencyReset()" class="px-4 py-3 bg-orange-900/80 border-2 border-orange-500/50 hover:bg-orange-800 rounded-xl text-orange-100 shadow-lg backdrop-blur-sm flex items-center gap-2 font-bold text-sm transition-all">
-                    <i data-lucide="refresh-cw" class="w-5 h-5"></i> <span class="hidden md:inline">Atascado (V)</span>
-                </button>
-            </div>
-
-            <!-- PROMPT INTERACCIÓN -->
-            <div id="interact-prompt" class="hidden absolute bottom-10 left-1/2 -translate-x-1/2 z-20 bg-slate-900/90 border-2 border-amber-400 rounded-full px-6 py-3 shadow-2xl backdrop-blur-sm animate-pulse-space flex items-center gap-3 font-sans-modern">
-                <span class="px-2 py-1 bg-slate-100 text-slate-900 font-bold rounded shadow text-xs">ESPACIO</span>
-                <span id="interact-text" class="text-amber-400 font-bold text-sm tracking-wide uppercase">Interactuar</span>
-            </div>
-
-            <!-- CONTROLES MÓVILES -->
-            <div class="absolute bottom-20 left-4 md:hidden z-20">
-                <div id="joystick-container" class="w-32 h-32 bg-slate-900/60 border-2 border-slate-700/50 rounded-full flex items-center justify-center relative pointer-events-auto backdrop-blur-md">
-                    <div id="joystick-knob" class="w-14 h-14 bg-amber-500 rounded-full shadow-lg border-2 border-amber-300 flex items-center justify-center absolute shadow-amber-500/50 cursor-pointer">
-                        <i data-lucide="move" class="w-6 h-6 text-slate-950"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="absolute bottom-20 right-4 md:hidden z-20">
-                <button id="btn-touch-action" class="w-20 h-20 bg-gradient-to-tr from-amber-500 to-orange-500 active:scale-95 text-slate-950 font-bold rounded-full shadow-lg border-4 border-amber-300 flex items-center justify-center shadow-orange-500/50 pointer-events-auto">
-                    <i data-lucide="hand" class="w-10 h-10"></i>
-                </button>
-            </div>
-        </div>
+    <div class="countdown-sep">·</div>
+    <div class="countdown-unit">
+      <span class="countdown-num" id="cd-hours">—</span>
+      <span class="countdown-label">horas</span>
     </div>
-
-    <!-- MODALES IN-GAME -->
-    <div id="modal-pause" class="hidden absolute inset-0 z-[60] bg-black/80 flex items-center justify-center p-4 backdrop-blur-sm font-sans-modern">
-        <div class="bg-slate-900 border-2 border-slate-700 rounded-2xl w-full max-w-xs overflow-hidden shadow-2xl p-6 flex flex-col gap-4 text-center">
-            <h3 class="text-2xl font-bold text-slate-100 font-retro mb-2">PAUSA</h3>
-            <button onclick="closeModal('modal-pause')" class="w-full py-3 bg-indigo-650 hover:bg-indigo-500 text-white font-bold rounded-xl transition-all">Continuar Jugando</button>
-            <button onclick="exitGame()" class="w-full py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl transition-all border border-slate-700">Volver al Menú Principal</button>
-        </div>
+    <div class="countdown-sep">·</div>
+    <div class="countdown-unit">
+      <span class="countdown-num" id="cd-mins">—</span>
+      <span class="countdown-label">minutos</span>
     </div>
-
-    <div id="modal-shop" class="hidden absolute inset-0 z-[60] bg-black/80 flex items-center justify-center p-4 font-sans-modern">
-        <div class="bg-slate-900 border-2 border-slate-700 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl flex flex-col max-h-[80vh]">
-            <div class="p-4 border-b border-slate-800 bg-slate-950 flex justify-between items-center shrink-0">
-                <h3 id="shop-title" class="text-lg font-bold text-amber-400 flex items-center gap-2">Catálogo</h3>
-                <button onclick="closeModal('modal-shop')" class="text-slate-400 hover:text-white"><i data-lucide="x"></i></button>
-            </div>
-            <div class="p-5 overflow-y-auto space-y-3" id="shop-items-container"></div>
-            <div class="p-4 bg-slate-950 border-t border-slate-800 flex justify-between items-center shrink-0">
-                <div class="text-slate-400 text-sm">Tu dinero: <span id="shop-money" class="text-emerald-400 font-bold font-retro">$0</span></div>
-                <button onclick="closeModal('modal-shop')" class="px-5 py-2 bg-slate-800 hover:bg-slate-700 text-white font-semibold rounded-xl">Cerrar</button>
-            </div>
-        </div>
+    <div class="countdown-sep">·</div>
+    <div class="countdown-unit">
+      <span class="countdown-num" id="cd-secs">—</span>
+      <span class="countdown-label">segundos</span>
     </div>
+  </div>
+</section>
 
-    <div id="modal-trabajo" class="hidden absolute inset-0 z-[60] bg-black/90 flex flex-col items-center justify-center p-4 font-sans-modern">
-        <div class="bg-slate-900 border-4 border-amber-600 rounded-3xl w-full max-w-2xl shadow-2xl flex flex-col overflow-hidden relative">
-            <button onclick="closeModal('modal-trabajo')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i data-lucide="x"></i></button>
-            <div class="text-center p-4 bg-slate-950 border-b border-slate-800">
-                <h2 class="text-2xl font-bold text-amber-400 font-retro">TOUR TURÍSTICO</h2>
-                <p class="text-slate-300 text-sm mt-1">Rango: <span id="guide-rank" class="font-bold text-amber-300 uppercase tracking-widest">Guía Novato</span></p>
-            </div>
-            <div class="p-6 flex-1 flex flex-col items-center gap-6 min-h-[250px] justify-center text-center">
-                <div class="text-6xl animate-bounce">👥</div>
-                <p id="guide-dialogue" class="text-lg text-slate-100 font-semibold px-4"></p>
-                <div id="guide-options" class="flex flex-col gap-3 w-full max-w-md mt-4"></div>
-            </div>
-            <div class="p-4 bg-slate-950 border-t border-slate-850 flex justify-between items-center px-6">
-                <span class="text-sm text-slate-400">Progreso: <span id="guide-progress" class="font-bold text-slate-200">1/3</span></span>
-                <span class="text-sm text-slate-400">Dinero: <span id="guide-earned" class="font-bold text-emerald-400 font-retro">$0</span></span>
-            </div>
-        </div>
+<!-- ============ TRABALLO DO ALUMNADO (INTEGRADO) ============ -->
+<section class="block" id="alumnado" style="border-top:none; padding-top:40px;">
+  <div class="block-header">
+    <div class="block-num">01 · O alumnado</div>
+    <h2>Tres voces, un <em>mesmo fenómeno</em>.</h2>
+  </div>
+  
+  <div class="intro-prose">
+    <p class="lead">O alumnado de 3º e 4º de ESO convértese en científicos, programadores e comunicadores para documentar, medir e divulgar a eclipse solar total do 12 de agosto de 2026 dende Ferrol.</p>
+    
+    <p>Todo o traballo está realizado integramente polos estudantes, arredor de tres liñas complementarias. A continuación pódense consultar e probar directamente os produtos creados en cada unha delas.</p>
+  </div>
+
+  <!-- ===== LIÑA 1 · CIENCIA ===== -->
+  <div class="workline">
+    <div class="workline-head">
+      <div class="workline-num">01</div>
+      <svg class="workline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="9"/><path d="M3 12 h6 m6 0 h6 M12 3 v6 m0 6 v6"/><circle cx="12" cy="12" r="3" fill="currentColor" opacity="0.2"/>
+      </svg>
+      <div class="workline-text">
+        <div class="workline-label">Ciencia · Observar e medir</div>
+        <h3 class="workline-title">Experimento con <em>Arduino</em></h3>
+        <p class="workline-desc">Unha estación de sensores (DHT22 e LDR) sobre Arduino UNO que rexistra a temperatura, a humidade e a intensidade luminosa antes, durante e despois da eclipse. Inclúe o vídeo do experimento real e a páxina que controla e visualiza os datos.</p>
+      </div>
     </div>
-
-    <div id="modal-casino-completo" class="hidden absolute inset-0 z-[130] bg-black/95 flex flex-col items-center justify-center p-4 overflow-y-auto font-sans-modern">
-        <div class="bg-[#0f291b] border-4 border-amber-500 rounded-3xl w-full max-w-3xl shadow-2xl p-6 relative text-white flex flex-col">
-            <button onclick="closeModal('modal-casino-completo')" class="absolute top-4 right-4 bg-slate-900/50 hover:bg-slate-900 p-2 rounded-full text-slate-300"><i data-lucide="x"></i></button>
-            <div class="text-center mb-6">
-                <h2 class="text-2xl font-bold text-amber-400 font-retro animate-pulse">🎰 CASINO VIP</h2>
-                <p class="text-xs text-slate-400">Tus Fondos: <span id="casino-money" class="text-emerald-400 font-retro font-bold text-base">$0</span></p>
-            </div>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-                <button onclick="selectCasinoGame('bj')" class="py-3 bg-emerald-950 hover:bg-emerald-900 border-2 border-emerald-800 rounded-xl font-bold flex flex-col items-center justify-center gap-1"><span class="text-2xl">🃏</span> Blackjack</button>
-                <button onclick="selectCasinoGame('poker')" class="py-3 bg-emerald-950 hover:bg-emerald-900 border-2 border-emerald-800 rounded-xl font-bold flex flex-col items-center justify-center gap-1"><span class="text-2xl">💵</span> Póker</button>
-                <button onclick="selectCasinoGame('ruleta')" class="py-3 bg-emerald-950 hover:bg-emerald-900 border-2 border-emerald-800 rounded-xl font-bold flex flex-col items-center justify-center gap-1"><span class="text-2xl">🎡</span> Ruleta</button>
-                <button onclick="selectCasinoGame('slots')" class="py-3 bg-emerald-950 hover:bg-emerald-900 border-2 border-emerald-800 rounded-xl font-bold flex flex-col items-center justify-center gap-1"><span class="text-2xl">🎰</span> Tragaperras</button>
-            </div>
-            <div id="casino-game-zone" class="bg-black/40 border-2 border-emerald-800 rounded-2xl p-6 min-h-[250px] flex flex-col items-center justify-center"></div>
+    
+    <div class="products-grid">
+      <!-- Vídeo do experimento -->
+      <article class="product-card">
+        <div class="product-body" style="padding-bottom:0;">
+          <span class="product-tag" style="position:static; align-self:flex-start; margin-bottom:18px;">Vídeo · Experimento</span>
+          <h3 class="product-title">O experimento <em>en acción</em></h3>
+          <p class="product-desc">Vídeo do experimento Arduino funcionando: a estación de sensores medindo a luz e a temperatura, gravada polo propio alumnado.</p>
         </div>
-    </div>
-
-    <div id="spain-map-overlay" class="hidden absolute inset-0 bg-slate-950/95 flex flex-col items-center justify-center p-4 z-[70] backdrop-blur-md">
-        <div class="bg-slate-900 border-2 border-amber-500 rounded-2xl w-full max-w-lg p-6 flex flex-col shadow-2xl relative">
-            <button onclick="closeSpainMap()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i data-lucide="x"></i></button>
-            <h3 class="text-xl font-bold text-amber-400 font-retro text-center mb-1">TOTALIDAD ESPAÑA 2026</h3>
-            <div class="w-full aspect-video bg-sky-950/40 rounded-xl border border-slate-700 p-2 relative overflow-hidden flex items-center justify-center mt-3">
-                <svg viewBox="0 0 400 350" class="w-full h-full drop-shadow-lg">
-                    <path d="M 60,35 C 80,35 110,40 120,40 C 130,40 150,30 170,40 C 190,40 220,50 250,50 C 270,55 300,50 310,55 C 320,60 330,80 340,90 C 350,100 355,115 350,125 C 345,135 320,150 315,160 C 310,170 300,190 280,210 C 265,225 240,240 215,250 C 195,258 185,268 175,275 C 165,282 150,285 140,280 C 130,275 115,255 105,245 C 95,235 90,215 90,195 C 90,175 80,140 85,120 C 88,105 75,90 70,80 C 65,70 55,60 50,55 C 45,50 50,35 60,35 Z" fill="#1e293b" stroke="#334155" stroke-width="3" stroke-linejoin="round"/>
-                    <path d="M 120,100 C 115,120 110,145 108,160 C 105,185 110,215 105,245" stroke="#475569" stroke-width="2" stroke-dasharray="4,4" fill="none"/>
-                    <path d="M 30,35 L 365,190" stroke="rgba(245, 158, 11, 0.25)" stroke-width="60" stroke-linecap="round" fill="none"/>
-                    <path d="M 30,35 L 365,190" stroke="rgba(15, 23, 42, 0.9)" stroke-width="45" stroke-linecap="round" fill="none"/>
-                    <path d="M 30,35 L 365,190" stroke="#f59e0b" stroke-width="2" stroke-dasharray="5,5" fill="none"/>
-                    <circle cx="80" cy="55" r="5" fill="#10b981" />
-                    <text x="75" y="45" fill="#cbd5e1" font-size="10" font-family="sans-serif" font-weight="bold">La Coruña (100%)</text>
-                    <circle cx="180" cy="85" r="5" fill="#10b981" />
-                    <text x="175" y="75" fill="#f59e0b" font-size="10" font-family="sans-serif" font-weight="bold">Burgos (Total)</text>
-                    <circle cx="260" cy="105" r="5" fill="#10b981" />
-                    <text x="255" y="95" fill="#f59e0b" font-size="10" font-family="sans-serif" font-weight="bold">Zaragoza (100%)</text>
-                </svg>
-            </div>
+        <div class="short-embed">
+          <iframe src="https://www.youtube.com/embed/vhQ_1QTHBZs" title="Vídeo do experimento Arduino" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
         </div>
-    </div>
-
-    <div id="modal-mapa-ciudad" class="hidden absolute inset-0 z-[70] bg-black/85 flex items-center justify-center p-4 backdrop-blur-sm font-sans-modern">
-        <div class="bg-slate-900 border-2 border-slate-700 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl">
-            <div class="p-4 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
-                <h3 class="text-lg font-bold text-indigo-400 font-retro"><i data-lucide="map" class="inline mb-1"></i> MAPA DE LA CIUDAD</h3>
-                <button onclick="closeModal('modal-mapa-ciudad')" class="text-slate-400 hover:text-white"><i data-lucide="x"></i></button>
-            </div>
-            <div class="p-6">
-                <div class="grid grid-cols-3 gap-3 text-center bg-slate-950 p-4 rounded-xl border border-slate-800">
-                    <div class="p-3 bg-emerald-950/40 border border-emerald-800/50 rounded-lg"><p class="text-sm text-emerald-400 font-bold">🏠 Casa</p><span class="text-xs text-slate-400">Oeste</span></div>
-                    <div class="p-3 bg-slate-900 border border-slate-800 rounded-lg"><p class="text-sm text-amber-400 font-bold">👓 Óptica</p><span class="text-xs text-slate-400">Norte Centro</span></div>
-                    <div class="p-3 bg-slate-900 border border-slate-800 rounded-lg"><p class="text-sm text-purple-400 font-bold">🔭 Astronomía</p><span class="text-xs text-slate-400">Noreste</span></div>
-                    <div class="p-3 bg-blue-950/40 border border-blue-900/50 rounded-lg"><p class="text-sm text-blue-400 font-bold">🗺️ Info</p><span class="text-xs text-slate-400">Centro</span></div>
-                    <div class="p-3 bg-red-950/40 border border-red-900/50 rounded-lg"><p class="text-sm text-red-400 font-bold">🍔 Comida</p><span class="text-xs text-slate-400">Sur Este</span></div>
-                    <div class="p-3 bg-yellow-950/40 border border-yellow-900/50 rounded-lg"><p class="text-sm text-yellow-400 font-bold">💼 Guías</p><span class="text-xs text-slate-400">Norte Extremo</span></div>
-                </div>
-                <div id="map-current-zone" class="mt-4 text-sm font-semibold text-center text-slate-200 py-2 px-4 bg-indigo-900/30 border border-indigo-500/20 rounded-full font-sans-modern">
-                    Ubicación actual: <span class="text-indigo-300 font-mono font-bold text-base">Cargando...</span>
-                </div>
-            </div>
+      </article>
+      <!-- Web de control -->
+      <article class="product-card">
+        <div class="product-preview">
+          <span class="product-tag">Web · Control e monitorización</span>
+          <iframe src="https://creativos-design.github.io/arduino/" title="Control e monitorización do experimento Arduino" loading="lazy" sandbox="allow-scripts allow-same-origin"></iframe>
         </div>
-    </div>
-
-    <div id="taxi-animation" class="hidden absolute inset-0 z-[120] bg-slate-900 flex flex-col items-center justify-center overflow-hidden font-sans-modern">
-        <h2 class="text-3xl text-amber-400 font-retro mb-10">VIAJANDO...</h2>
-        <div class="w-full h-32 bg-slate-700 relative border-y-4 border-slate-500 flex items-center overflow-hidden shadow-2xl">
-            <div class="w-[200%] h-0 border-t-8 border-dashed border-yellow-500 opacity-70 absolute animate-[slide_1s_linear_infinite]"></div>
-            <div id="taxi-car-emoji" class="absolute text-7xl -left-24 drop-shadow-xl z-10" style="transition: left 2s ease-in-out;">🚖</div>
+        <div class="product-body">
+          <h3 class="product-title">Control e <em>monitorización</em></h3>
+          <p class="product-desc">Páxina que recolle e representa os datos da estación Arduino, mostrando como descenden a luz e a temperatura no instante da eclipse.</p>
+          <a class="product-open" href="https://creativos-design.github.io/arduino/" target="_blank" rel="noopener">Abrir a páxina <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 L17 7 M9 7 h8 v8"/></svg></a>
         </div>
+      </article>
     </div>
+  </div>
 
-    <div id="modal-taxi" class="hidden absolute inset-0 z-[60] bg-black/80 flex items-center justify-center p-4">
-        <div class="bg-slate-900 border-2 border-amber-500 rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl font-sans-modern">
-            <div class="p-4 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
-                <h3 class="text-lg font-bold text-amber-400"><i data-lucide="car" class="inline mb-1"></i> Taxi Urbano</h3>
-                <button onclick="closeModal('modal-taxi')" class="text-slate-400 hover:text-white"><i data-lucide="x"></i></button>
-            </div>
-            <div class="p-4 space-y-2">
-                <button onclick="executeTravel('casa')" class="w-full p-3 bg-slate-800 hover:bg-slate-700 text-left rounded-lg font-semibold">🏠 Casa</button>
-                <button onclick="executeTravel('optica')" class="w-full p-3 bg-slate-800 hover:bg-slate-700 text-left rounded-lg font-semibold">👓 Óptica</button>
-                <button onclick="executeTravel('centro')" class="w-full p-3 bg-slate-800 hover:bg-slate-700 text-left rounded-lg font-semibold">🗺️ Centro Info</button>
-                <button onclick="executeTravel('astro')" class="w-full p-3 bg-slate-800 hover:bg-slate-700 text-left rounded-lg font-semibold">🔭 Tienda Astro</button>
-                <button onclick="executeTravel('casino')" class="w-full p-3 bg-slate-800 hover:bg-slate-700 text-left rounded-lg font-semibold">💼 Oficina Guías</button>
-                <button onclick="executeTravel('mirador')" class="w-full p-3 bg-amber-600 hover:bg-amber-500 text-black text-left rounded-lg font-bold">⛰️ Mirador (Fin)</button>
-            </div>
+  <!-- ===== LIÑA 2 · TECNOLOXÍA ===== -->
+  <div class="workline">
+    <div class="workline-head">
+      <div class="workline-num">02</div>
+      <svg class="workline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="4" width="20" height="14" rx="1"/><path d="M2 8 h20"/><path d="M8 13 l-2 2 2 2 M16 13 l2 2 -2 2 M13 12 l-2 6"/>
+      </svg>
+      <div class="workline-text">
+        <div class="workline-label">Tecnoloxía · Programar</div>
+        <h3 class="workline-title">Aplicacións <em>web</em></h3>
+        <p class="workline-desc">Dúas aplicacións programadas polo alumnado en HTML, CSS e JavaScript: unha páxina informativa sobre como observar a eclipse con seguridade e un videoxogo de aventura gráfica ambientado no fenómeno.</p>
+      </div>
+    </div>
+    
+    <div class="products-grid">
+      <!-- Web información -->
+      <article class="product-card">
+        <div class="product-preview">
+          <span class="product-tag">Web · Información</span>
+          <iframe src="https://creativos-design.github.io/webalumno2/" title="Información para observar a eclipse" loading="lazy" sandbox="allow-scripts allow-same-origin"></iframe>
         </div>
-    </div>
-
-    <div id="eclipse-final-screen" class="hidden absolute inset-0 z-[100] bg-slate-950 flex flex-col items-center justify-center p-4 overflow-y-auto font-sans-modern">
-        <div class="w-full max-w-2xl text-center space-y-6 animate-in fade-in zoom-in duration-500">
-            <h2 class="text-4xl md:text-5xl font-bold font-retro text-amber-400 animate-pulse">ECLIPSE TOTAL</h2>
-            <p id="final-message-text" class="text-slate-300 text-lg">Te has preparado bien. Disfruta del espectáculo astronómico.</p>
-            <div class="relative w-full aspect-video bg-black rounded-2xl border-2 border-indigo-500/30 overflow-hidden shadow-2xl flex items-center justify-center">
-                <canvas id="eclipseAnimationCanvas" class="absolute inset-0 w-full h-full"></canvas>
-            </div>
-            <div class="flex gap-4 justify-center">
-                <button onclick="location.reload()" class="px-8 py-3 bg-gradient-to-r from-amber-500 to-orange-600 text-slate-950 font-bold font-retro text-xs rounded-xl">JUGAR DE NUEVO</button>
-            </div>
+        <div class="product-body">
+          <h3 class="product-title">Como observar a <em>eclipse</em></h3>
+          <p class="product-desc">Datos astronómicos, riscos para a vista, normas de observación segura e unha conta atrás ata o momento da totalidade.</p>
+          <a class="product-open" href="https://creativos-design.github.io/webalumno2/" target="_blank" rel="noopener">Abrir a páxina <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 L17 7 M9 7 h8 v8"/></svg></a>
         </div>
+      </article>
+      <!-- Xogo -->
+      <article class="product-card">
+        <div class="product-preview">
+          <span class="product-tag">Videoxogo · Web</span>
+          <iframe src="https://creativos-design.github.io/webalumno/" title="Aventura gráfica do eclipse" loading="lazy" sandbox="allow-scripts allow-same-origin"></iframe>
+        </div>
+        <div class="product-body">
+          <h3 class="product-title">Aventura <em>gráfica</em></h3>
+          <p class="product-desc">Videoxogo no que o usuario percorre a cidade para mercar o material necesario para observar a eclipse, xestionando o orzamento. Aprendizaxe a través do xogo.</p>
+          <a class="product-open" href="https://creativos-design.github.io/webalumno/" target="_blank" rel="noopener">Abrir o xogo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 L17 7 M9 7 h8 v8"/></svg></a>
+        </div>
+      </article>
     </div>
+  </div>
 
-    <!-- SCRIPTS CORE -->
-    <script>
-        // --- 1. CONFIGURACIÓN GLOBALES Y DOM ---
-        const VIEW_WIDTH = 800; 
-        const VIEW_HEIGHT = 450;
-        const ZOOM_FACTOR = 1.6;
+  <!-- ===== LIÑA 3 · COMUNICACIÓN ===== -->
+  <div class="workline">
+    <div class="workline-head">
+      <div class="workline-num">03</div>
+      <svg class="workline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10 v2 a7 7 0 0 0 14 0 v-2 M12 19 v3 M8 22 h8"/>
+      </svg>
+      <div class="workline-text">
+        <div class="workline-label">Comunicación · Divulgar</div>
+        <h3 class="workline-title">Programa de <em>radio</em></h3>
+        <p class="workline-desc">Unha peza divulgativa producida, locutada e editada polo propio equipo, na que se explican os fundamentos da eclipse, as normas de observación segura e os resultados do experimento. Publicada en iVoox.</p>
+      </div>
+    </div>
+    
+    <div class="products-grid">
+      <article class="product-card radio-card wide">
+        <div class="product-body">
+          <span class="product-tag" style="position:static; align-self:flex-start; margin-bottom:18px;">Podcast · Radio</span>
+          <h3 class="product-title">«Polos Eclipsados» · <em>Ondas do Tirso</em></h3>
+          <p class="product-desc">Escoita o programa completo aquí mesmo.</p>
+        </div>
+        <div class="radio-embed">
+          <iframe src="https://www.ivoox.com/player_ek_174539619_6_1.html?c1=007BC4" width="100%" height="200" frameborder="0" allowfullscreen loading="lazy" title="Programa de radio Polos Eclipsados en iVoox"></iframe>
+        </div>
+        <div class="product-body" style="padding-top:0;">
+          <a class="product-open" href="https://www.ivoox.com/polos-eclipsados-audios-mp3_rf_174539619_1.html" target="_blank" rel="noopener">Escoitar en iVoox <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 L17 7 M9 7 h8 v8"/></svg></a>
+        </div>
+      </article>
+    </div>
+  </div>
 
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = VIEW_WIDTH; 
-        canvas.height = VIEW_HEIGHT;
+</section>
 
-        const joyKnob = document.getElementById('joystick-knob');
-        const joyCont = document.getElementById('joystick-container');
+<!-- ============ QUOTE ============ -->
+<aside class="quote">
+  <div class="quote-inner">
+    <div class="quote-mark">“</div>
+    <p class="quote-text">A eclipse é a escusa. O método científico, a meta. O alumnado faise científico, programador e comunicador ao mesmo tempo.</p>
+    <p class="quote-attr">— Equipo do proxecto · Recreo Tecno</p>
+  </div>
+</aside>
 
-        lucide.createIcons();
+<!-- ============ MEMORIA TÉCNICA ============ -->
+<section class="block" id="memoria">
+  <div class="block-header">
+    <div class="block-num">02 · Memoria</div>
+    <h2>Memoria <em>técnica</em> da actividade.</h2>
+  </div>
+  
+  <p class="lead">Síntese dos elementos requiridos pola convocatoria Retos STEM (Resolución do 8 de maio de 2026).</p>
+  
+  <div class="memory-grid">
+    
+    <div class="memory-row">
+      <div class="memory-key">Título</div>
+      <div class="memory-value"><strong>Eclipse 2026: Observar, Medir e Comunicar</strong></div>
+    </div>
+    
+    <div class="memory-row">
+      <div class="memory-key">Reto / problema</div>
+      <div class="memory-value">Triplo reto: <strong>científico</strong> (rexistrar o impacto ambiental da eclipse mediante sensores Arduino), <strong>tecnolóxico</strong> (programar unha web interactiva con conta atrás e información astronómica) e <strong>comunicativo</strong> (producir un programa de radio de divulgación científica). O equipo convértese en científicos, programadores e comunicadores ao mesmo tempo.</div>
+    </div>
+    
+    <div class="memory-row">
+      <div class="memory-key">Fundamentos científicos</div>
+      <div class="memory-value">A eclipse solar total prodúcese cando a Lúa se interpón entre a Terra e o Sol, proxectando a súa sombra sobre a superficie terrestre. Espérase unha diminución drástica da intensidade luminosa e variacións medibles en temperatura e humidade. O proxecto aplica <strong>astronomía</strong> (mecánica orbital, fases da Lúa, tipos de eclipses), <strong>física</strong> (radiación solar e espectro visible), <strong>meteoroloxía</strong> (relación radiación–temperatura–humidade) e <strong>electrónica e programación</strong> (microcontroladores con sensores DHT22 e LDR para a recollida automatizada de datos).</div>
+    </div>
+    
+    <div class="memory-row">
+      <div class="memory-key">Aspectos estéticos e artísticos</div>
+      <div class="memory-value">A web interactiva incorpora un deseño visual propio do alumnado, conta atrás en tempo real e contido científico ilustrado, combinando rigor e creatividade dixital. O programa de radio coida a narración, a musicalización e a estrutura dramática, achegando valor cultural á ciencia. O conxunto reivindica a beleza do fenómeno astronómico como encontro entre <strong>ciencia, tecnoloxía e expresión artística</strong>.</div>
+    </div>
+    
+    <div class="memory-row">
+      <div class="memory-key">Materiais e método</div>
+      <div class="memory-value">O equipo deseña un protocolo de recollida de datos validado mediante simulación previa e executado o día da eclipse. A web prográmase de forma autónoma. O programa de radio guiónase, grávase e edítase íntegramente no Polo Creativo. Todo o proceso é documentado fotograficamente e en vídeo. Os tres produtos publícanse en aberto con licenza CC BY-NC-SA para poderen ser reproducidos por outros centros.</div>
+    </div>
+    
+    <div class="memory-row">
+      <div class="memory-key">Resultado e avaliación</div>
+      <div class="memory-value">Gráficas de variación de luz, temperatura e humidade durante a eclipse do 12 de agosto de 2026 con datos reais; web interactiva publicada e accesible; programa de radio divulgativo en formato audio. <strong>Criterios de avaliación:</strong> rigor científico, calidade técnica dos produtos e grao de autonomía do alumnado.</div>
+    </div>
+    
+    <div class="memory-row">
+      <div class="memory-key">Propostas de mellora</div>
+      <div class="memory-value">Ampliar o número de sensores en futuras edicións; compartir os datos en aberto para comparar con outros centros de Galicia; incorporar á web os datos reais da eclipse tras o 12 de agosto; abrir o programa de radio a unha serie periódica de divulgación científica.</div>
+    </div>
+    
+  </div>
+</section>
 
-        // --- 2. VARIABLES DE ESTADO DEL JUEGO ---
-        let gameActive = false; 
-        let animationFrameId = null; 
-        let currentScene = 'casa';
-        let camera = { x: 0, y: 0 };
-        let closestInteractable = null;
-        let keys = {}; 
-        
-        let player = { x: 180, y: 180, width: 24, height: 38, speed: 2.5, dirX: 0, dirY: 0, faceDir: 'down', animFrame: 0, isMoving: false };
-        let playerState = { money: 0, inventory: [], currentQuestIndex: 0, guideRank: 0 };
-        
-        let cinematicActive = false;
-        let limoState = { active: false, x: 0, y: 0, targetX: 0, targetY: 0, phase: 'approaching', timer: 0 };
+<!-- ============ MATERIAIS ============ -->
+<section class="block" id="materiais">
+  <div class="block-header">
+    <div class="block-num">03 · Polo Creativo</div>
+    <h2>Dotación <em>empregada</em>.</h2>
+  </div>
+  
+  <p class="lead">Equipamento e ferramentas do Polo Creativo do centro empregadas no desenvolvemento integral do proxecto.</p>
+  
+  <ul class="materials-list">
+    <li>Placa Arduino UNO</li>
+    <li>Sensor DHT22 — temperatura e humidade</li>
+    <li>Sensor LDR — intensidade luminosa</li>
+    <li>Protoboard e cables de conexión</li>
+    <li>Ordenadores do Polo Creativo</li>
+    <li>Micrófonos e equipamento de audio</li>
+    <li>Software de edición de audio</li>
+    <li>Software de programación e deseño web</li>
+  </ul>
+</section>
 
-        let joystickActive = false; 
-        let joystickStart = { x: 0, y: 0 }; 
-        let joyVec = { x: 0, y: 0 };
+<!-- ============ A XENTE DO PROXECTO ============ -->
+<section class="block" id="xente">
+  <div class="block-header">
+    <div class="block-num">04 · A xente</div>
+    <h2>A xente <em>do proxecto</em>.</h2>
+  </div>
+  
+  <p class="lead">Detrás de cada liña de traballo hai un grupo de estudantes de 3º e 4º de ESO que asumiron, de verdade, os papeis de científicos, programadores e comunicadores.</p>
+  
+  <div class="team-photo-wrap">
+    <!-- Cando subas a foto, substitúe o bloque PLACEHOLDER de abaixo por:
+         <img class="team-photo" src="assets/equipo.jpg" alt="Equipo do proxecto Eclipse 2026">
+    -->
+    <div class="team-photo-placeholder">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3">
+        <rect x="3" y="5" width="18" height="14" rx="2"/>
+        <circle cx="12" cy="12" r="3.2"/>
+        <path d="M8 5 l1.2-2 h5.6 L16 5"/>
+      </svg>
+      <span>Foto do equipo · pendente de subir</span>
+    </div>
+    <div class="team-photo-caption">Equipo do proxecto · CPR Tirso de Molina (Ferrol)</div>
+  </div>
+</section>
 
-        // --- 3. DATOS CONSTANTES ---
-        const RANKS = [
-            { name: "Guía Novato", mult: 1 }, { name: "Guía Profesional", mult: 4 },
-            { name: "Guía Experto", mult: 16 }, { name: "Guía Maestro", mult: 64 }, { name: "Guía Leyenda", mult: 256 }
-        ];
+<!-- ============ EQUIPO ============ -->
+<section class="block" id="equipo">
+  <div class="block-header">
+    <div class="block-num">05 · Datos</div>
+    <h2>Datos <em>identificativos</em>.</h2>
+  </div>
+  
+  <div class="team-card">
+    <div class="team-block">
+      <div class="team-label">Centro educativo</div>
+      <div class="team-name">CPR Tirso de Molina</div>
+      <div class="team-detail">Ferrol · A Coruña<br>Centro con Polo Creativo</div>
+    </div>
+    
+    <div class="team-block">
+      <div class="team-label">Nivel educativo</div>
+      <div class="team-name">3º e 4º de ESO</div>
+      <div class="team-detail">Entre 5 e 10 estudantes participantes</div>
+    </div>
+    
+    <div class="team-block">
+      <div class="team-label">Docente responsable</div>
+      <div class="team-name">Bruno Fraguela Villar</div>
+      <div class="team-detail">Xefatura do Departamento de Tecnoloxía</div>
+      <div class="team-detail"><a href="mailto:bruno_quimica@tirsoferrol.com">bruno_quimica@tirsoferrol.com</a></div>
+    </div>
+    
+    <div class="team-block">
+      <div class="team-label">Modalidade</div>
+      <div class="team-name">Retos STEM</div>
+      <div class="team-detail">Polos Eclipsados · Convocatoria 2026<br>Resolución do 8 de maio de 2026</div>
+    </div>
+  </div>
+</section>
 
-        const QUESTS = [
-            { id: 'wallet', title: 'Encuentra tu cartera', desc: 'Sobre la mesa en tu casa.', icon: 'wallet' },
-            { id: 'glasses', title: 'Compra gafas ISO', desc: 'En la Óptica de la ciudad.', icon: 'glasses' },
-            { id: 'map', title: 'Estudia la Ruta', desc: 'En el Centro de Información.', icon: 'map' },
-            { id: 'telescope', title: 'Telescopio profesional', desc: 'En la tienda de Astronomía.', icon: 'search' },
-            { id: 'mirador', title: 'Sube al Mirador', desc: 'Al extremo Este del mapa.', icon: 'eye' },
-            { id: 'done', title: '¡Todo listo!', desc: 'Espera al eclipse.', icon: 'check-circle' }
-        ];
+<!-- ============ INSTITUTIONAL LOGOS ============ -->
+<section class="institutional">
+  <div class="institutional-inner">
+    <p class="institutional-label">Proxecto presentado a</p>
+    
+    <div class="logos-row">
+      <div class="logo-block">
+        <img src="assets/eclipse-galicia.jpeg" alt="Eclipse Galicia 12.08.26" class="logo-img">
+        <span class="logo-label">Eclipse Galicia</span>
+      </div>
+      
+      <div class="logo-block">
+        <img src="assets/polos-creativos.png" alt="Polos Creativos · Xunta de Galicia" class="logo-img polos">
+        <span class="logo-label">Polos Creativos</span>
+      </div>
+      
+      <div class="logo-block">
+        <img src="assets/tirso-logo.png" alt="CPR Tirso de Molina" class="logo-img tirso" style="background:var(--ink); padding:8px 16px; border-radius:4px;">
+        <span class="logo-label">CPR Tirso de Molina</span>
+      </div>
+    </div>
+    
+    <div class="license-box">
+      <span class="license-icon">⊕</span>
+      <div class="license-title">Licenza CC BY-NC-SA 4.0</div>
+      <p class="license-text">Todos os contidos deste proxecto están publicados baixo licenza Creative Commons Recoñecemento – Non comercial – Compartir igual 4.0 Internacional, segundo as pautas da convocatoria de Polos Eclipsados.</p>
+    </div>
+  </div>
+</section>
 
-        const SHOPS = {
-            optica: [
-                { id: 'glasses', name: 'Gafas de Eclipse ISO', price: 10, type: 'quest', icon: '👓' },
-                { id: 'fancy', name: 'Gafas de Sol Lujo (Easter Egg)', price: 150, type: 'easter', icon: '🕶️' }
-            ],
-            astro: [
-                { id: 'telescope', name: 'Telescopio Filtro Solar', price: 30, type: 'quest', icon: '🔭' },
-                { id: 'watchtower', name: 'Burj Khalifa de la Mancha', price: 100000, type: 'easter', icon: '🗼' }
-            ],
-            fastfood: [
-                { id: 'burger', name: 'Hamburguesa Triple Especial', price: 5, type: 'easter', icon: '🍔' },
-                { id: 'soda', name: 'Refresco Energético', price: 2, type: 'easter', icon: '🥤' }
-            ]
-        };
+<!-- ============ BOTTOM FOOTER ============ -->
+<footer class="bottom">
+  <p class="bottom-text">
+    Eclipse 2026 · Observar, Medir e Comunicar
+    <span class="bottom-dot">●</span>
+    CPR Tirso de Molina, Ferrol
+    <br>
+    <a href="https://centros.edu.xunta.gal/poloscreativos/" target="_blank" rel="noopener">centros.edu.xunta.gal/poloscreativos</a>
+    <span class="bottom-dot">●</span>
+    <a href="https://www.instagram.com/recreotecno_tirsomolinaferrol" target="_blank" rel="noopener">@recreotecno_tirsomolinaferrol</a>
+  </p>
+</footer>
 
-        const PREGUNTAS_BANCO = [
-            { text: "¿Qué ocurre exactamente durante la totalidad de un eclipse solar?", options: [{ text: "La Tierra proyecta sombra", correct: false }, { text: "La Luna cubre al Sol", correct: true }, { text: "El Sol se enfría", correct: false }] },
-            { text: "¿Método seguro para mirar un eclipse parcial?", options: [{ text: "Gafas ISO 12312-2", correct: true }, { text: "Gafas de sol dobles", correct: false }, { text: "Cámara del móvil", correct: false }] },
-            { text: "¿Cuándo es el eclipse total en España?", options: [{ text: "Navidad de 2028", correct: false }, { text: "12 de agosto de 2026", correct: true }, { text: "5 de mayo de 2026", correct: false }] },
-            { text: "¿Qué parte del Sol se ve en la totalidad?", options: [{ text: "Fotosfera", correct: false }, { text: "La corona solar", correct: true }, { text: "Manchas", correct: false }] },
-            { text: "¿Duración de totalidad en el norte de España 2026?", options: [{ text: "De 1 a 2 minutos", correct: true }, { text: "Media hora", correct: false }, { text: "10 segundos", correct: false }] },
-            { text: "¿Destellos brillantes antes de la totalidad?", options: [{ text: "Perlas de Baily", correct: true }, { text: "Destellos Galileo", correct: false }, { text: "Refracción", correct: false }] }
-        ];
+<script>
+  // ===== COUNTDOWN TO ECLIPSE =====
+  // Eclipse solar total — 12 de agosto de 2026
+  // Máxima totalidade en Galicia: ~20:30 CEST (18:30 UTC)
+  const eclipseDate = new Date(Date.UTC(2026, 7, 12, 18, 30, 0)).getTime();
+  
+  function updateCountdown() {
+    const now = Date.now();
+    const distance = eclipseDate - now;
+    
+    if (distance < 0) {
+      document.getElementById('cd-days').textContent = '0';
+      document.getElementById('cd-hours').textContent = '00';
+      document.getElementById('cd-mins').textContent = '00';
+      document.getElementById('cd-secs').textContent = '00';
+      return;
+    }
+    
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const mins = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const secs = Math.floor((distance % (1000 * 60)) / 1000);
+    
+    document.getElementById('cd-days').textContent = days;
+    document.getElementById('cd-hours').textContent = String(hours).padStart(2, '0');
+    document.getElementById('cd-mins').textContent = String(mins).padStart(2, '0');
+    document.getElementById('cd-secs').textContent = String(secs).padStart(2, '0');
+  }
+  
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+</script>
 
-        const scenes = {
-            casa: {
-                width: 380, height: 320, bgColor: '#2e1c0c',
-                obstacles: [
-                    { x: 0, y: 0, w: 380, h: 40 }, { x: 0, y: 0, w: 20, h: 320 }, { x: 360, y: 0, w: 20, h: 320 },
-                    { x: 0, y: 300, w: 140, h: 20 }, { x: 220, y: 300, w: 160, h: 20 },
-                    { x: 30, y: 50, w: 70, h: 60 }, { x: 140, y: 40, w: 100, h: 45 }, { x: 280, y: 40, w: 50, h: 40 }, { x: 160, y: 150, w: 60, h: 50 }
-                ],
-                interactives: [
-                    { id: 'wallet', x: 305, y: 60, radius: 25, label: 'Billetera', emoji: '🪙' },
-                    { id: 'exit_casa', x: 180, y: 295, radius: 25, label: 'Salir', emoji: '🚪' }
-                ]
-            },
-            ciudad: {
-                width: 1600, height: 900, bgColor: '#1e3f20',
-                obstacles: [
-                    { x: 0, y: 0, w: 20, h: 900 }, { x: 0, y: 0, w: 1600, h: 20 }, { x: 1580, y: 0, w: 20, h: 900 }, { x: 0, y: 880, w: 1600, h: 20 },
-                    { x: 50, y: 300, w: 200, h: 140 }, { x: 500, y: 100, w: 180, h: 140 }, { x: 800, y: 100, w: 180, h: 140 }, 
-                    { x: 1100, y: 100, w: 200, h: 150 }, { x: 650, y: 450, w: 200, h: 120 }, { x: 950, y: 450, w: 180, h: 120 }, 
-                    { x: 400, y: 350, w: 40, h: 550 }, { x: 400, y: 20, w: 40, h: 130 }, { x: 1350, y: 20, w: 40, h: 320 }, { x: 1350, y: 480, w: 40, h: 420 }
-                ],
-                interactives: [
-                    { id: 'enter_casa', x: 150, y: 430, radius: 25, label: 'Casa', emoji: '🏠' },
-                    { id: 'enter_optica', x: 590, y: 230, radius: 25, label: 'Óptica', emoji: '👓' },
-                    { id: 'enter_info', x: 750, y: 560, radius: 25, label: 'Info Turística', emoji: '🗺️' },
-                    { id: 'enter_astro', x: 890, y: 230, radius: 25, label: 'Astronomía', emoji: '🔭' },
-                    { id: 'enter_fastfood', x: 1040, y: 560, radius: 25, label: 'Comida', emoji: '🍔' },
-                    { id: 'enter_casino', x: 1200, y: 240, radius: 25, label: 'Oficina Guías', emoji: '💼' },
-                    { id: 'mirador_spot', x: 1450, y: 400, radius: 40, label: 'Mirador', emoji: '☀️' },
-                    { id: 'taxi', x: 300, y: 480, radius: 25, label: 'Taxi', emoji: '🚖' }, { id: 'taxi', x: 1300, y: 480, radius: 25, label: 'Taxi', emoji: '🚖' }
-                ]
-            },
-            optica: {
-                width: 320, height: 240, bgColor: '#0f172a',
-                obstacles: [
-                    { x: 0, y: 0, w: 320, h: 40 }, { x: 0, y: 0, w: 20, h: 240 }, { x: 300, y: 0, w: 20, h: 240 },
-                    { x: 0, y: 220, w: 120, h: 20 }, { x: 200, y: 220, w: 120, h: 20 }, { x: 80, y: 80, w: 160, h: 40 }
-                ],
-                interactives: [ { id: 'shop_optica', x: 160, y: 130, radius: 25, label: 'Comprar', emoji: '👨‍⚕️' }, { id: 'exit', x: 160, y: 215, radius: 25, label: 'Salir', emoji: '🚪' } ]
-            },
-            astro: {
-                width: 320, height: 240, bgColor: '#1e1b4b',
-                obstacles: [
-                    { x: 0, y: 0, w: 320, h: 40 }, { x: 0, y: 0, w: 20, h: 240 }, { x: 300, y: 0, w: 20, h: 240 },
-                    { x: 0, y: 220, w: 120, h: 20 }, { x: 200, y: 220, w: 120, h: 20 }, { x: 80, y: 85, w: 160, h: 35 }
-                ],
-                interactives: [ { id: 'shop_astro', x: 160, y: 130, radius: 25, label: 'Catálogo', emoji: '👩‍🔬' }, { id: 'exit', x: 160, y: 215, radius: 25, label: 'Salir', emoji: '🚪' } ]
-            },
-            fastfood: {
-                width: 320, height: 240, bgColor: '#7f1d1d',
-                obstacles: [
-                    { x: 0, y: 0, w: 320, h: 40 }, { x: 0, y: 0, w: 20, h: 240 }, { x: 300, y: 0, w: 20, h: 240 },
-                    { x: 0, y: 220, w: 120, h: 20 }, { x: 200, y: 220, w: 120, h: 20 }, { x: 80, y: 80, w: 160, h: 40 }
-                ],
-                interactives: [ { id: 'shop_fastfood', x: 160, y: 130, radius: 25, label: 'Menú', emoji: '🧑‍🍳' }, { id: 'exit', x: 160, y: 215, radius: 25, label: 'Salir', emoji: '🚪' } ]
-            },
-            centro: {
-                width: 380, height: 280, bgColor: '#0f172a',
-                obstacles: [
-                    { x: 0, y: 0, w: 380, h: 40 }, { x: 0, y: 0, w: 20, h: 280 }, { x: 360, y: 0, w: 20, h: 280 },
-                    { x: 0, y: 260, w: 140, h: 20 }, { x: 220, y: 260, w: 160, h: 20 }, { x: 110, y: 70, w: 160, h: 40 }
-                ],
-                interactives: [ { id: 'read_map', x: 190, y: 120, radius: 25, label: 'Mapa', emoji: '🗺️' }, { id: 'exit', x: 180, y: 255, radius: 25, label: 'Salir', emoji: '🚪' } ]
-            },
-            casino: {
-                width: 400, height: 350, bgColor: '#0b1329',
-                obstacles: [
-                    { x: 0, y: 0, w: 400, h: 40 }, { x: 0, y: 0, w: 20, h: 350 }, { x: 380, y: 0, w: 20, h: 350 },
-                    { x: 0, y: 330, w: 160, h: 20 }, { x: 240, y: 330, w: 160, h: 20 }, { x: 120, y: 100, w: 160, h: 60 } 
-                ],
-                interactives: [ { id: 'work_guide', x: 200, y: 170, radius: 30, label: 'Trabajar', emoji: '💼' }, { id: 'exit', x: 200, y: 325, radius: 25, label: 'Salir', emoji: '🚪' } ]
-            }
-        };
-
-        // --- 4. FUNCIONES UTILITARIAS Y AUDIO ---
-        let audioCtx = null;
-        let isSoundEnabled = true;
-
-        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-
-        function playSound(type) {
-            if (!isSoundEnabled) return;
-            initAudio(); if (!audioCtx) return;
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            const now = audioCtx.currentTime;
-
-            if (type === 'select') {
-                osc.type = 'triangle'; osc.frequency.setValueAtTime(400, now); osc.frequency.exponentialRampToValueAtTime(800, now + 0.1);
-                gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-                osc.start(now); osc.stop(now + 0.1);
-            } else if (type === 'buy') {
-                osc.type = 'sine'; osc.frequency.setValueAtTime(600, now); osc.frequency.setValueAtTime(1200, now + 0.1);
-                gain.gain.setValueAtTime(0.15, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-                osc.start(now); osc.stop(now + 0.3);
-            } else if (type === 'quest') {
-                const notes = [440, 554.37, 659.25, 880];
-                notes.forEach((freq, idx) => {
-                    const no = audioCtx.createOscillator(); const ng = audioCtx.createGain();
-                    no.connect(ng); ng.connect(audioCtx.destination); no.type = 'square';
-                    no.frequency.setValueAtTime(freq, now + idx * 0.1);
-                    ng.gain.setValueAtTime(0.05, now + idx * 0.1); ng.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.1 + 0.2);
-                    no.start(now + idx * 0.1); no.stop(now + idx * 0.1 + 0.2);
-                });
-            } else if (type === 'engine') {
-                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(60, now); osc.frequency.linearRampToValueAtTime(150, now + 2);
-                gain.gain.setValueAtTime(0.1, now); gain.gain.linearRampToValueAtTime(0, now + 2);
-                osc.start(now); osc.stop(now + 2);
-            }
-        }
-
-        function openModal(id) { playSound('select'); document.getElementById(id).classList.remove('hidden'); }
-        function closeModal(id) { playSound('select'); document.getElementById(id).classList.add('hidden'); }
-        function openPauseMenu() { openModal('modal-pause'); }
-
-        function updateHUD() {
-            document.getElementById('hud-money').textContent = `$${playerState.money}`;
-            document.getElementById('shop-money').textContent = `$${playerState.money}`;
-            document.getElementById('casino-money').textContent = `$${playerState.money}`;
-        }
-
-        function showMessage(msg) {
-            const box = document.getElementById('dialogue-box');
-            box.textContent = msg; box.classList.remove('hidden'); box.style.opacity = 1;
-            setTimeout(() => { box.style.opacity = 0; setTimeout(() => box.classList.add('hidden'), 300); }, 4000);
-        }
-
-        // --- 5. MECÁNICAS RPG (Misiones, Tienda, Trabajo, Mini-Juegos) ---
-        function completeQuest(questId) {
-            if (QUESTS[playerState.currentQuestIndex].id === questId) {
-                playerState.currentQuestIndex++; playSound('quest');
-                const tracker = document.getElementById('quest-tracker');
-                tracker.classList.add('quest-animating');
-                setTimeout(() => {
-                    const q = QUESTS[playerState.currentQuestIndex];
-                    document.getElementById('quest-title').textContent = q.title;
-                    document.getElementById('quest-desc').textContent = q.desc;
-                    document.getElementById('quest-icon').innerHTML = `<i data-lucide="${q.icon}" class="w-5 h-5"></i>`;
-                    lucide.createIcons(); tracker.classList.remove('quest-animating');
-                }, 750);
-            }
-        }
-
-        function openShop(shopId, title) {
-            playSound('select'); document.getElementById('shop-title').innerHTML = title;
-            const container = document.getElementById('shop-items-container'); container.innerHTML = '';
-            SHOPS[shopId].forEach(item => {
-                const isOwned = playerState.inventory.includes(item.id);
-                const canAfford = playerState.money >= item.price;
-                let btnHtml = isOwned && item.type !== 'easter' ? `<button disabled class="px-4 py-2 bg-slate-800 text-slate-500 rounded font-bold text-xs">Comprado</button>` :
-                              canAfford ? `<button onclick="buyItem('${item.id}', ${item.price}, '${item.name}', '${item.type}')" class="px-4 py-2 bg-emerald-600 text-white rounded font-bold text-xs">Comprar $${item.price}</button>` :
-                              `<button disabled class="px-4 py-2 bg-red-900/50 text-red-400 rounded font-bold text-xs">Sin fondos</button>`;
-                container.innerHTML += `<div class="flex items-center justify-between p-3 bg-slate-950 border border-slate-800 rounded-xl">
-                    <div class="flex items-center gap-3"><span class="text-2xl">${item.icon}</span><div><p class="font-bold text-slate-200 text-sm">${item.name}</p></div></div>${btnHtml}</div>`;
-            });
-            updateHUD(); openModal('modal-shop');
-        }
-
-        function buyItem(id, price, name, type) {
-            if (playerState.money >= price) {
-                playSound('buy'); playerState.money -= price; playerState.inventory.push(id); updateHUD();
-                showMessage(type === 'easter' ? `Has comprado: ${name}. ¡Genial!` : `Has adquirido: ${name}.`);
-                if (id === 'glasses') completeQuest('glasses'); if (id === 'telescope') completeQuest('telescope');
-                let currentShopKey = ''; for (let k in SHOPS) { if(SHOPS[k].some(i => i.id === id)) currentShopKey = k; }
-                openShop(currentShopKey, document.getElementById('shop-title').innerHTML);
-            }
-        }
-
-        let tourState = { currentQuestion: 0, earnedThisTour: 0, incorrectAnswers: 0, selectedQuestions: [] };
-        function openTrabajo() {
-            playSound('select'); tourState.currentQuestion = 0; tourState.earnedThisTour = 0; tourState.incorrectAnswers = 0;
-            const shuffled = [...PREGUNTAS_BANCO].sort(() => 0.5 - Math.random());
-            tourState.selectedQuestions = shuffled.slice(0, 3);
-            document.getElementById('guide-rank').textContent = RANKS[playerState.guideRank].name;
-            document.getElementById('modal-trabajo').classList.remove('hidden'); showTourQuestion();
-        }
-
-        function showTourQuestion() {
-            const q = tourState.selectedQuestions[tourState.currentQuestion];
-            document.getElementById('guide-progress').textContent = `${tourState.currentQuestion + 1}/3`;
-            document.getElementById('guide-dialogue').textContent = `Turista: ${q.text}`;
-            document.getElementById('guide-earned').textContent = `$${tourState.earnedThisTour}`;
-            const opts = document.getElementById('guide-options'); opts.innerHTML = '';
-            q.options.forEach((opt, idx) => {
-                opts.innerHTML += `<button onclick="answerTourQuestion(${opt.correct})" class="w-full py-3 bg-slate-800 text-slate-100 text-left px-5 rounded-xl border border-slate-700 font-sans-modern"><span class="font-bold text-amber-500">${String.fromCharCode(65 + idx)})</span> ${opt.text}</button>`;
-            });
-        }
-
-        function answerTourQuestion(isCorrect) {
-            playSound('select'); const rankInfo = RANKS[playerState.guideRank];
-            if (isCorrect) {
-                const gain = 100 * rankInfo.mult; tourState.earnedThisTour += gain; showMessage(`✅ ¡Correcto! +$${gain}`);
-            } else {
-                tourState.incorrectAnswers++; const penalty = Math.round(50 * rankInfo.mult);
-                tourState.earnedThisTour = Math.max(0, tourState.earnedThisTour - penalty); showMessage(`❌ ¡Error! -$${penalty}`);
-            }
-            tourState.currentQuestion++; tourState.currentQuestion < 3 ? showTourQuestion() : finishTour();
-        }
-
-        function finishTour() {
-            let promo = "";
-            if (tourState.incorrectAnswers === 0) {
-                if (playerState.guideRank < RANKS.length - 1) { playerState.guideRank++; playSound('quest'); promo = `¡Ascendido a ${RANKS[playerState.guideRank].name}!`; } 
-                else promo = "¡Rango Leyenda Máximo!";
-            } else promo = "Sin ascenso por errores. ¡A estudiar!";
-            playerState.money += tourState.earnedThisTour; updateHUD();
-            document.getElementById('guide-dialogue').innerHTML = `<p class="text-xl font-bold text-emerald-400">¡Fin del Tour!</p><p>Ganancias: $${tourState.earnedThisTour}</p><p class="text-sm text-slate-400">${promo}</p>`;
-            document.getElementById('guide-options').innerHTML = `<button onclick="closeModal('modal-trabajo')" class="w-full py-3 bg-amber-500 text-black font-bold rounded-xl">CERRAR</button>`;
-        }
-
-        // Casino Secreto
-        function initDeck() {
-            const suits = ['♠','♥','♦','♣']; const values = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
-            let deck = []; for (let s of suits) for (let v of values) deck.push({suit: s, val: v});
-            return deck.sort(() => Math.random() - 0.5);
-        }
-        function calcScore(hand) {
-            let score = 0; let aces = 0;
-            for (let card of hand) { if (card.val === 'A') { aces++; score += 11; } else if (['J','Q','K'].includes(card.val)) score += 10; else score += parseInt(card.val); }
-            while (score > 21 && aces > 0) { score -= 10; aces--; } return score;
-        }
-        function renderCard(card, hidden = false) {
-            if (hidden) return `<div class="w-12 h-16 bg-indigo-900 border-2 border-indigo-700 rounded-md shadow-lg"></div>`;
-            return `<div class="w-12 h-16 bg-white rounded-md flex flex-col items-center justify-center shadow-lg border border-slate-300 font-bold ${['♥','♦'].includes(card.suit) ? 'text-red-500' : 'text-slate-900'}"><span>${card.val}</span><span class="text-xs">${card.suit}</span></div>`;
-        }
-
-        function selectCasinoGame(gameId) {
-            playSound('select'); const zone = document.getElementById('casino-game-zone');
-            if (gameId === 'bj') zone.innerHTML = `<div class="text-center w-full space-y-4"><h4 class="text-base font-retro text-amber-400">BLACKJACK</h4><div class="flex justify-around bg-black/60 p-4 rounded-xl"><div><p class="text-xs text-slate-400">Crupier</p><div id="casino-bj-dealer" class="flex gap-1 min-h-[60px]"></div><p id="casino-bj-dealer-score" class="text-xs mt-1 font-mono"></p></div><div><p class="text-xs text-slate-400">Tú</p><div id="casino-bj-player" class="flex gap-1 min-h-[60px]"></div><p id="casino-bj-player-score" class="text-xs mt-1 font-mono"></p></div></div><p id="casino-bj-msg" class="text-sm text-amber-300 font-sans-modern">Haz tu apuesta</p><div id="casino-bj-bet-actions" class="flex gap-2 justify-center"><button onclick="startCasinoBJ(20)" class="px-4 py-2 bg-amber-600 text-black font-bold rounded-lg font-sans-modern">Apostar $20</button></div><div id="casino-bj-game-actions" class="hidden flex gap-2 justify-center"><button onclick="casinoBJHit()" class="px-4 py-2 bg-emerald-600 text-white font-bold rounded-lg font-sans-modern">Pedir</button><button onclick="casinoBJStand()" class="px-4 py-2 bg-red-600 text-white font-bold rounded-lg font-sans-modern">Plantarse</button></div></div>`;
-            else if (gameId === 'ruleta') zone.innerHTML = `<div class="text-center w-full space-y-4 font-sans-modern"><h4 class="text-base font-retro text-amber-400">RULETA</h4><div class="bg-black/60 p-4 rounded-xl flex flex-col items-center"><div id="ruleta-wheel" class="w-16 h-16 bg-emerald-950 border-4 border-amber-600 rounded-full flex items-center justify-center text-xl font-bold font-retro">0</div><p id="ruleta-result" class="text-xs text-slate-300 mt-2">Apuesta $50</p></div><div class="grid grid-cols-3 gap-2"><button onclick="spinRuleta('rojo')" class="py-2 bg-red-600 text-white text-xs font-bold rounded-lg">Rojo</button><button onclick="spinRuleta('negro')" class="py-2 bg-slate-900 text-white text-xs font-bold rounded-lg">Negro</button><button onclick="spinRuleta('cero')" class="py-2 bg-emerald-600 text-white text-xs font-bold rounded-lg">Cero 0</button></div></div>`;
-            else if (gameId === 'slots') zone.innerHTML = `<div class="text-center w-full space-y-4 font-sans-modern"><h4 class="text-base font-retro text-amber-400">TRAGAPERRAS</h4><div class="flex justify-center gap-3 bg-black/60 p-4 rounded-xl"><div id="slot-1" class="w-12 h-16 bg-white rounded flex items-center justify-center text-3xl">🍒</div><div id="slot-2" class="w-12 h-16 bg-white rounded flex items-center justify-center text-3xl">🍒</div><div id="slot-3" class="w-12 h-16 bg-white rounded flex items-center justify-center text-3xl">🍒</div></div><p id="slots-msg" class="text-xs text-slate-300">¡Apuesta $20!</p><button onclick="spinSlots()" class="px-6 py-2 bg-amber-600 text-black font-bold rounded-xl font-retro">TIRAR</button></div>`;
-            else if (gameId === 'poker') zone.innerHTML = `<div class="text-center w-full space-y-4 font-sans-modern"><h4 class="text-base font-retro text-amber-400">PÓKER ($50)</h4><div id="poker-hand" class="flex justify-center gap-1 min-h-[70px]"></div><p id="poker-msg" class="text-sm text-amber-300">Pulsa las cartas a conservar</p><button id="poker-action-btn" onclick="startPokerRound()" class="px-6 py-2 bg-amber-600 text-black font-bold rounded-lg">Repartir</button></div>`;
-        }
-
-        let cbjState = { deck: [], player: [], dealer: [], bet: 0 };
-        function startCasinoBJ(bet) {
-            if (playerState.money < bet) { document.getElementById('casino-bj-msg').textContent = "¡Sin fondos!"; return; }
-            playerState.money -= bet; cbjState.bet = bet; updateHUD(); cbjState.deck = initDeck();
-            cbjState.player = [cbjState.deck.pop(), cbjState.deck.pop()]; cbjState.dealer = [cbjState.deck.pop(), cbjState.deck.pop()];
-            document.getElementById('casino-bj-bet-actions').classList.add('hidden'); document.getElementById('casino-bj-game-actions').classList.remove('hidden');
-            document.getElementById('casino-bj-msg').textContent = "Apuesta activa. ¿Pedir o Plantarse?"; updateCasinoBJUI(true);
-        }
-        function updateCasinoBJUI(hide) {
-            document.getElementById('casino-bj-player').innerHTML = cbjState.player.map(c => renderCard(c)).join('');
-            document.getElementById('casino-bj-player-score').textContent = calcScore(cbjState.player);
-            document.getElementById('casino-bj-dealer').innerHTML = hide ? renderCard(cbjState.dealer[0]) + renderCard(null, true) : cbjState.dealer.map(c => renderCard(c)).join('');
-            document.getElementById('casino-bj-dealer-score').textContent = hide ? "?" : calcScore(cbjState.dealer);
-        }
-        function casinoBJHit() { cbjState.player.push(cbjState.deck.pop()); updateCasinoBJUI(true); if (calcScore(cbjState.player) > 21) endCasinoBJRound("Te has pasado. Pierdes.", 0); }
-        function casinoBJStand() {
-            while(calcScore(cbjState.dealer) < 17) cbjState.dealer.push(cbjState.deck.pop()); updateCasinoBJUI(false);
-            const ps = calcScore(cbjState.player); const ds = calcScore(cbjState.dealer);
-            if (ds > 21 || ps > ds) endCasinoBJRound("¡Ganas la mano!", cbjState.bet * 2);
-            else if (ps < ds) endCasinoBJRound("El crupier gana.", 0); else endCasinoBJRound("Empate.", cbjState.bet);
-        }
-        function endCasinoBJRound(msg, payout) {
-            document.getElementById('casino-bj-msg').textContent = msg; playerState.money += payout; updateHUD();
-            document.getElementById('casino-bj-game-actions').classList.add('hidden'); document.getElementById('casino-bj-bet-actions').classList.remove('hidden');
-        }
-        function spinRuleta(betType) {
-            if (playerState.money < 50) { document.getElementById('ruleta-result').textContent = "¡Sin fondos!"; return; }
-            playerState.money -= 50; updateHUD(); playSound('select');
-            const num = Math.floor(Math.random() * 37); const isRed = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36].includes(num);
-            const wheel = document.getElementById('ruleta-wheel'); wheel.textContent = num;
-            wheel.className = `w-16 h-16 border-4 border-amber-600 rounded-full flex items-center justify-center text-xl font-bold font-retro ${num === 0 ? 'bg-emerald-600' : (isRed ? 'bg-red-600' : 'bg-slate-900')}`;
-            let win = (betType==='rojo'&&isRed&&num!==0) || (betType==='negro'&&!isRed&&num!==0) || (betType==='cero'&&num===0);
-            let payout = win ? (num===0 ? 50*35 : 50*2) : 0;
-            if (win) { playerState.money += payout; updateHUD(); document.getElementById('ruleta-result').textContent = `¡${num}! Ganas $${payout}`; playSound('buy'); } 
-            else document.getElementById('ruleta-result').textContent = `Salió el ${num}. Pierdes.`;
-        }
-        function spinSlots() {
-            if (playerState.money < 20) { document.getElementById('slots-msg').textContent = "¡Sin fondos!"; return; }
-            playerState.money -= 20; updateHUD(); playSound('select');
-            const icons = ['🍒', '🍋', '🍇', '⭐', '💎'];
-            const s1 = icons[Math.floor(Math.random() * icons.length)]; const s2 = icons[Math.floor(Math.random() * icons.length)]; const s3 = icons[Math.floor(Math.random() * icons.length)];
-            document.getElementById('slot-1').textContent = s1; document.getElementById('slot-2').textContent = s2; document.getElementById('slot-3').textContent = s3;
-            if (s1 === s2 && s2 === s3) { const prize = s1==='💎'?1000:(s1==='⭐'?500:200); playerState.money+=prize; updateHUD(); document.getElementById('slots-msg').textContent = `¡JACKPOT! +$${prize}`; playSound('buy'); } 
-            else if (s1 === s2 || s2 === s3 || s1 === s3) { playerState.money += 40; updateHUD(); document.getElementById('slots-msg').textContent = "Pareja. +$40"; } 
-            else document.getElementById('slots-msg').textContent = "Prueba de nuevo.";
-        }
-        let pokerState = { hand: [], isHold: [false,false,false,false,false], phase: 0 };
-        function startPokerRound() {
-            if (pokerState.phase === 0) {
-                if (playerState.money < 50) return; playerState.money -= 50; updateHUD(); playSound('select');
-                pokerState.deck = initDeck(); pokerState.hand = [pokerState.deck.pop(), pokerState.deck.pop(), pokerState.deck.pop(), pokerState.deck.pop(), pokerState.deck.pop()];
-                pokerState.isHold = [false,false,false,false,false]; pokerState.phase = 1;
-                document.getElementById('poker-action-btn').textContent = "Descartar y Resolver"; renderPokerHand();
-            } else {
-                for(let i=0; i<5; i++) if (!pokerState.isHold[i]) pokerState.hand[i] = pokerState.deck.pop();
-                renderPokerHand(false); pokerState.phase = 0; document.getElementById('poker-action-btn').textContent = "Repartir $50"; resolvePokerHand();
-            }
-        }
-        function renderPokerHand(int = true) {
-            document.getElementById('poker-hand').innerHTML = pokerState.hand.map((c, i) => `<div onclick="if(${int}) togglePokerHold(${i})" class="w-12 h-16 rounded-md flex flex-col items-center justify-center border-2 font-bold cursor-pointer ${['♥','♦'].includes(c.suit)?'text-red-500':'text-slate-900'} ${pokerState.isHold[i]?'border-amber-400 bg-amber-50':'border-slate-300 bg-white'}"><span>${c.val}</span><span class="text-xs">${c.suit}</span></div>`).join('');
-        }
-        function togglePokerHold(i) { pokerState.isHold[i] = !pokerState.isHold[i]; renderPokerHand(); }
-        function resolvePokerHand() {
-            const counts = {}; pokerState.hand.forEach(c => counts[c.val] = (counts[c.val] || 0) + 1);
-            const vals = Object.values(counts).sort((a,b)=>b-a);
-            let prize = 0; let name = "Nada";
-            if (vals[0]===4) { prize=500; name="Póker"; } else if (vals[0]===3 && vals[1]===2) { prize=350; name="Full House"; } else if (vals[0]===3) { prize=150; name="Trío"; } else if (vals[0]===2 && vals[1]===2) { prize=100; name="Doble Pareja"; } else if (vals[0]===2) { prize=50; name="Pareja"; }
-            if (prize>0) { playerState.money+=prize; updateHUD(); document.getElementById('poker-msg').innerHTML = `<span class="text-emerald-400">¡${name}! +$${prize}</span>`; playSound('buy'); } 
-            else document.getElementById('poker-msg').textContent = "Sin combinación. ¡Prueba de nuevo!";
-        }
-
-        // --- 6. FÍSICAS Y CONTROLES DEL JUEGO PRINCIPAL ---
-        function checkCollisionWithWalls(x, y, w, h) {
-            const tolerance = 4; const scene = scenes[currentScene];
-            for (let wall of scene.obstacles) {
-                if (x + tolerance < wall.x + wall.w && x + w - tolerance > wall.x && y + tolerance < wall.y + wall.h && y + h - tolerance > wall.y) return true;
-            }
-            return false;
-        }
-
-        // Eventos táctiles
-        function jStart(e) { joystickActive=true; const r = joyCont.getBoundingClientRect(); joystickStart={x: r.left+r.width/2, y: r.top+r.height/2}; }
-        function jMove(e) {
-            if(!joystickActive) return; if(e.cancelable) e.preventDefault();
-            const t = e.touches?e.touches[0]:e; const dx = t.clientX - joystickStart.x; const dy = t.clientY - joystickStart.y;
-            const dist = Math.min(Math.sqrt(dx*dx+dy*dy), 30); const ang = Math.atan2(dy, dx);
-            joyKnob.style.transform = `translate(${Math.cos(ang)*dist}px, ${Math.sin(ang)*dist}px)`;
-            player.isMoving = true; player.dirX = (Math.cos(ang)*dist)/30; player.dirY = (Math.sin(ang)*dist)/30;
-            player.faceDir = Math.abs(dx)>Math.abs(dy) ? (dx>0?'right':'left') : (dy>0?'down':'up');
-        }
-        function jEnd() { joystickActive=false; joyKnob.style.transform='translate(0,0)'; player.isMoving=false; player.dirX=0; player.dirY=0; }
-        
-        if (joyKnob) {
-            joyKnob.addEventListener('touchstart', jStart); window.addEventListener('touchmove', jMove, {passive:false}); window.addEventListener('touchend', jEnd);
-            joyKnob.addEventListener('mousedown', jStart); window.addEventListener('mousemove', jMove); window.addEventListener('mouseup', jEnd);
-        }
-
-        // Eventos de Teclado
-        window.addEventListener('keydown', e => {
-            if (cinematicActive) return;
-            keys[e.key.toLowerCase()] = true;
-            if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(e.key)) e.preventDefault();
-            if(e.key.toLowerCase() === 'm') openCityMap();
-            if(e.key.toLowerCase() === 'v') emergencyReset();
-            if(e.key === ' ' && closestInteractable) executeInteraction(closestInteractable);
-            if(e.key.toLowerCase() === 'c' && gameActive) summonLimousine();
-        });
-        window.addEventListener('keyup', e => { if (!cinematicActive) keys[e.key.toLowerCase()] = false; });
-
-        function emergencyReset() {
-            playSound('travel');
-            const cp = { casa: {x:180,y:220}, ciudad: {x:300,y:530}, optica: {x:160,y:160}, astro: {x:160,y:160}, centro: {x:185,y:200}, fastfood: {x:160,y:160}, casino: {x:200,y:250} }[currentScene] || {x:150,y:150};
-            player.x = cp.x; player.y = cp.y; player.dirX = 0; player.dirY = 0; player.isMoving = false; keys = {};
-            showMessage("⚠️ ¡Desatascado con éxito hacia zona segura!");
-        }
-
-        function executeInteraction(item) {
-            playSound('interact');
-            if (item.id === 'wallet') { playerState.inventory.push('wallet'); playerState.money += 50; updateHUD(); completeQuest('wallet'); showMessage("¡+$50!"); playSound('pickup'); } 
-            else if (item.id === 'taxi') openModal('modal-taxi');
-            else if (item.id.startsWith('enter_')) {
-                const target = item.id.split('_')[1]; currentScene = target;
-                const spawns = { casa:{x:180,y:250}, optica:{x:160,y:180}, astro:{x:160,y:180}, info:{s:'centro',x:185,y:220}, fastfood:{x:160,y:180}, casino:{x:200,y:280} };
-                if (spawns[target].s) currentScene = spawns[target].s;
-                player.x = spawns[target].x; player.y = spawns[target].y;
-            }
-            else if (item.id === 'exit_casa' || item.id === 'exit') {
-                const spawns = { casa:{x:150,y:430}, optica:{x:590,y:270}, astro:{x:890,y:270}, centro:{x:750,y:600}, fastfood:{x:1040,y:600}, casino:{x:1200,y:270} };
-                currentScene = 'ciudad'; player.x = spawns[currentScene].x || 150; player.y = spawns[currentScene].y || 430;
-            }
-            else if (item.id === 'shop_optica') openShop('optica', 'Óptica ISO');
-            else if (item.id === 'shop_astro') openShop('astro', 'Astronomía');
-            else if (item.id === 'shop_fastfood') openShop('fastfood', 'Comida');
-            else if (item.id === 'work_guide') openTrabajo();
-            else if (item.id === 'read_map') { completeQuest('map'); openModal('spain-map-overlay'); }
-            else if (item.id === 'mirador_spot') {
-                const req = playerState.inventory.includes('watchtower') || (playerState.inventory.includes('glasses') && playerState.inventory.includes('telescope'));
-                if (req) { completeQuest('mirador'); setTimeout(() => triggerFinalEclipse(playerState.inventory.includes('watchtower')), 1000); } 
-                else showMessage("Necesitas Gafas, Telescopio o el Burj Khalifa.");
-            }
-        }
-
-        const touchBtn = document.getElementById('btn-touch-action');
-        if (touchBtn) touchBtn.addEventListener('touchstart', (e) => { e.preventDefault(); if(closestInteractable) executeInteraction(closestInteractable); });
-
-        function summonLimousine() {
-            playSound('engine'); cinematicActive = true; limoState.active = true; limoState.phase = 'approaching';
-            limoState.targetX = player.x - 10; limoState.targetY = player.y; limoState.x = camera.x - 150; limoState.y = player.y; limoState.timer = 0;
-            player.isMoving = false; player.dirX = 0; player.dirY = 0; keys = {}; showMessage("✨ ¡Se ha solicitado tu Limusina VIP!");
-        }
-
-        function executeTravel(dest) {
-            closeModal('modal-taxi'); playSound('engine');
-            const overlay = document.getElementById('taxi-animation'); overlay.classList.remove('hidden');
-            const car = document.getElementById('taxi-car-emoji'); car.style.left = '-6rem'; setTimeout(() => car.style.left = '120%', 50);
-            setTimeout(() => {
-                currentScene = 'ciudad';
-                const dests = { casa:{x:150,y:480}, optica:{x:590,y:300}, centro:{x:750,y:610}, astro:{x:890,y:300}, casino:{x:1200,y:300}, mirador:{x:1380,y:420} };
-                player.x = dests[dest].x; player.y = dests[dest].y;
-                overlay.classList.add('hidden'); showMessage("Llegaste a tu destino.");
-            }, 2000);
-        }
-
-        function openCityMap() { playSound('select'); document.getElementById('modal-mapa-ciudad').classList.remove('hidden'); }
-        function closeSpainMap() { playSound('select'); document.getElementById('spain-map-overlay').classList.add('hidden'); }
-
-        // --- 7. BUCLE PRINCIPAL (UPDATE & DRAW) ---
-        function update() {
-            if (!gameActive) return;
-
-            if (limoState.active) {
-                if (limoState.phase === 'approaching') {
-                    if (limoState.x < limoState.targetX) { limoState.x += 3.5; if (limoState.x >= limoState.targetX) { limoState.x = limoState.targetX; limoState.phase = 'boarding'; limoState.timer = 45; playSound('interact'); } }
-                } else if (limoState.phase === 'boarding') {
-                    limoState.timer--; if (limoState.timer <= 0) { limoState.phase = 'leaving'; playSound('engine'); }
-                } else if (limoState.phase === 'leaving') {
-                    limoState.x += 4.5;
-                    if (limoState.x > camera.x + (VIEW_WIDTH/ZOOM_FACTOR) + 150) { limoState.active = false; cinematicActive = false; openModal('modal-casino-completo'); selectCasinoGame('slots'); }
-                }
-            }
-
-            if (!joystickActive && !cinematicActive) {
-                player.dirX = 0; player.dirY = 0; player.isMoving = false;
-                if (keys['arrowup'] || keys['w']) { player.dirY = -1; player.faceDir = 'up'; player.isMoving = true; }
-                if (keys['arrowdown'] || keys['s']) { player.dirY = 1; player.faceDir = 'down'; player.isMoving = true; }
-                if (keys['arrowleft'] || keys['a']) { player.dirX = -1; player.faceDir = 'left'; player.isMoving = true; }
-                if (keys['arrowright'] || keys['d']) { player.dirX = 1; player.faceDir = 'right'; player.isMoving = true; }
-                if (player.dirX !== 0 && player.dirY !== 0) { player.dirX *= 0.7071; player.dirY *= 0.7071; }
-            }
-
-            if (player.isMoving && !cinematicActive) {
-                let speed = player.speed;
-                if (!checkCollisionWithWalls(player.x + player.dirX * speed, player.y, player.width, player.height)) player.x += player.dirX * speed;
-                if (!checkCollisionWithWalls(player.x, player.y + player.dirY * speed, player.width, player.height)) player.y += player.dirY * speed;
-                player.animFrame += 0.08;
-            } else if (!cinematicActive) { player.animFrame = 0; }
-
-            const visW = VIEW_WIDTH / ZOOM_FACTOR; const visH = VIEW_HEIGHT / ZOOM_FACTOR;
-            camera.x = Math.max(0, Math.min(player.x - visW / 2 + player.width / 2, scenes[currentScene].width - visW));
-            camera.y = Math.max(0, Math.min(player.y - visH / 2 + player.height / 2, scenes[currentScene].height - visH));
-
-            if (!cinematicActive) {
-                let found = null; let minDist = 1000; const px = player.x + player.width/2; const py = player.y + player.height/2;
-                for (let item of scenes[currentScene].interactives) {
-                    if (item.id === 'wallet' && playerState.inventory.includes('wallet')) continue;
-                    const dist = Math.sqrt((px - item.x)**2 + (py - item.y)**2);
-                    if (dist < item.radius + 15 && dist < minDist) { minDist = dist; found = item; }
-                }
-                closestInteractable = found;
-                const prompt = document.getElementById('interact-prompt');
-                if (found) { prompt.classList.remove('hidden'); document.getElementById('interact-text').textContent = found.label; } else prompt.classList.add('hidden');
-            }
-        }
-
-        function draw() {
-            ctx.clearRect(0, 0, VIEW_WIDTH, VIEW_HEIGHT); ctx.save(); ctx.scale(ZOOM_FACTOR, ZOOM_FACTOR); ctx.translate(-camera.x, -camera.y);
-            const scene = scenes[currentScene]; ctx.fillStyle = scene.bgColor; ctx.fillRect(0, 0, scene.width, scene.height);
-
-            if (currentScene === 'ciudad') {
-                ctx.fillStyle = '#475569'; ctx.fillRect(50, 480, 1400, 100); ctx.fillRect(560, 240, 60, 240); ctx.fillRect(860, 240, 60, 240); ctx.fillRect(1170, 240, 60, 240); ctx.fillRect(720, 560, 60, 200); ctx.fillRect(1010, 560, 60, 200);
-                ctx.fillStyle = '#1d4ed8'; ctx.fillRect(400, 0, 40, 900); ctx.fillStyle = '#7c2d12'; ctx.fillRect(390, 500, 60, 60);
-                ctx.fillStyle = '#27272a'; ctx.fillRect(1350, 0, 250, 900); ctx.fillStyle = '#78350f'; ctx.fillRect(1350, 410, 250, 40);
-                ctx.fillStyle = '#f59e0b'; ctx.fillRect(50, 300, 200, 130); ctx.fillStyle = '#334155'; ctx.fillRect(500, 100, 180, 140); ctx.fillStyle = '#1e1b4b'; ctx.fillRect(800, 100, 180, 140); ctx.fillStyle = '#0f172a'; ctx.fillRect(1100, 100, 200, 150); ctx.fillStyle = '#1e293b'; ctx.fillRect(650, 450, 200, 110); ctx.fillStyle = '#9f1239'; ctx.fillRect(950, 450, 180, 110);
-                ctx.fillStyle = '#06b6d4'; ctx.fillRect(1120, 80, 160, 20); ctx.fillStyle = '#fbbf24'; ctx.fillRect(520, 80, 140, 20); ctx.fillStyle = '#a855f7'; ctx.fillRect(820, 80, 140, 20); ctx.fillStyle = '#3b82f6'; ctx.fillRect(670, 430, 160, 20); ctx.fillStyle = '#fecdd3'; ctx.fillRect(970, 430, 140, 20);
-                ctx.fillStyle = '#065f46'; [[460,300],[460,350],[460,400], [1300,100],[1300,200],[1300,300], [700,380],[900,380]].forEach(t => { ctx.beginPath(); ctx.arc(t[0], t[1], 20, 0, Math.PI*2); ctx.fill(); ctx.fillStyle='#451a03'; ctx.fillRect(t[0]-3, t[1]+10, 6, 15); ctx.fillStyle='#065f46'; });
-            } else if (currentScene === 'casa') {
-                ctx.fillStyle = '#b91c1c'; ctx.fillRect(100, 100, 180, 120); ctx.fillStyle = '#4f46e5'; ctx.fillRect(30, 50, 70, 60); ctx.fillStyle = '#f3f4f6'; ctx.fillRect(30, 50, 20, 60); ctx.fillStyle = '#7c2d12'; ctx.fillRect(160, 150, 60, 50);
-            } else if (currentScene === 'casino') {
-                ctx.fillStyle = '#1e293b'; ctx.fillRect(20, 20, 360, 310); ctx.fillStyle = '#475569'; ctx.fillRect(100, 120, 200, 50);
-            } else {
-                ctx.fillStyle = currentScene==='fastfood' ? '#fecaca' : '#1e293b'; ctx.fillRect(20, 40, scene.width - 40, scene.height - 60); ctx.fillStyle = '#475569'; ctx.fillRect(80, 80, 160, 35);
-            }
-
-            ctx.fillStyle = 'rgba(0,0,0,0.2)';
-            for (let w of scene.obstacles) { if (currentScene !== 'ciudad' && (w.x===0 || w.y===0 || w.w>300)) { ctx.fillStyle = '#1e293b'; ctx.fillRect(w.x, w.y, w.w, w.h); } }
-
-            for (let item of scene.interactives) {
-                if (item.id === 'wallet' && playerState.inventory.includes('wallet')) continue;
-                ctx.beginPath(); ctx.arc(item.x, item.y, item.radius, 0, Math.PI*2);
-                if (closestInteractable === item) { ctx.shadowBlur = 15; ctx.shadowColor = '#fbbf24'; ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 3; } else { ctx.shadowBlur = 0; ctx.strokeStyle = 'rgba(255,255,255,0.2)'; ctx.lineWidth = 1; }
-                ctx.stroke(); ctx.shadowBlur = 0; 
-                ctx.font = '22px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(item.emoji, item.x, item.y + (Math.sin(Date.now()/200)*3));
-            }
-
-            if (!limoState.active || limoState.phase === 'approaching') {
-                const px = player.x; const py = player.y; const pw = player.width; const ph = player.height;
-                ctx.beginPath(); ctx.ellipse(px+pw/2, py+ph, 10, 4, 0, 0, Math.PI*2); ctx.fillStyle = 'rgba(0,0,0,0.4)'; ctx.fill();
-                ctx.fillStyle = '#ffedd5'; ctx.beginPath(); ctx.arc(px+pw/2, py+10, 8, 0, Math.PI*2); ctx.fill(); 
-                ctx.fillStyle = '#451a03'; ctx.beginPath(); ctx.arc(px+pw/2, py+8, 8, Math.PI, Math.PI*2); ctx.fill(); ctx.fillRect(px+pw/2-8, py+8, 16, 4); 
-                if (playerState.inventory.includes('fancy')) { ctx.fillStyle = '#ec4899'; ctx.fillRect(px+pw/2-9, py+6, 18, 5); } else if (playerState.inventory.includes('glasses')) { ctx.fillStyle = '#000'; ctx.fillRect(px+pw/2-8, py+7, 16, 4); ctx.fillStyle = '#fbbf24'; ctx.fillRect(px+pw/2-6, py+8, 4, 2); ctx.fillRect(px+pw/2+2, py+8, 4, 2); } else { ctx.fillStyle = '#1e293b'; if (player.faceDir === 'down') { ctx.fillRect(px+pw/2-4, py+9, 2, 2); ctx.fillRect(px+pw/2+2, py+9, 2, 2); } else if (player.faceDir === 'left') ctx.fillRect(px+pw/2-5, py+9, 2, 2); else if (player.faceDir === 'right') ctx.fillRect(px+pw/2+3, py+9, 2, 2); }
-                ctx.fillStyle = '#dc2626'; ctx.fillRect(px+3, py+18, pw-6, 12); ctx.fillStyle = '#1d4ed8'; ctx.fillRect(px+3, py+30, pw-6, 4); 
-                ctx.fillStyle = '#ffedd5'; const walk = Math.sin(player.animFrame) * 4;
-                if (player.isMoving) { ctx.fillRect(px+4, py+34, 4, 4+Math.max(0, walk)); ctx.fillRect(px+pw-8, py+34, 4, 4+Math.max(0, -walk)); } else { ctx.fillRect(px+4, py+34, 4, 4); ctx.fillRect(px+pw-8, py+34, 4, 4); }
-            }
-
-            if (limoState.active) {
-                ctx.beginPath(); ctx.ellipse(limoState.x, limoState.y + player.height - 2, 55, 7, 0, 0, Math.PI * 2); ctx.fillStyle = 'rgba(0, 0, 0, 0.45)'; ctx.fill();
-                ctx.fillStyle = '#0f172a'; ctx.fillRect(limoState.x - 55, limoState.y + 10, 110, 20); ctx.fillRect(limoState.x - 40, limoState.y, 80, 11);
-                ctx.fillStyle = '#020617'; ctx.fillRect(limoState.x - 35, limoState.y + 2, 18, 7); ctx.fillRect(limoState.x - 10, limoState.y + 2, 25, 7); ctx.fillRect(limoState.x + 20, limoState.y + 2, 15, 7);
-                ctx.fillStyle = '#1e293b'; ctx.beginPath(); ctx.arc(limoState.x - 38, limoState.y + 30, 8, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.arc(limoState.x + 38, limoState.y + 30, 8, 0, Math.PI * 2); ctx.fill();
-                ctx.fillStyle = '#e2e8f0'; ctx.beginPath(); ctx.arc(limoState.x - 38, limoState.y + 30, 4, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.arc(limoState.x + 38, limoState.y + 30, 4, 0, Math.PI * 2); ctx.fill();
-                ctx.fillStyle = '#fef08a'; ctx.fillRect(limoState.x + 52, limoState.y + 12, 3, 5); ctx.fillStyle = '#f87171'; ctx.fillRect(limoState.x - 55, limoState.y + 12, 2, 5);
-            }
-
-            ctx.restore();
-            let darken = currentScene !== 'ciudad' ? 0.05 : (playerState.inventory.includes('telescope') ? 0.4 : (playerState.inventory.includes('glasses') ? 0.2 : 0.05));
-            ctx.fillStyle = `rgba(5, 10, 20, ${darken})`; ctx.fillRect(0, 0, VIEW_WIDTH, VIEW_HEIGHT);
-        }
-
-        function gameLoop() { update(); draw(); animationFrameId = requestAnimationFrame(gameLoop); }
-
-        function startGame() {
-            playSound('select'); document.getElementById('main-menu').classList.add('hidden'); document.getElementById('game-ui').classList.remove('hidden');
-            gameActive = true; currentScene = 'casa'; player.x = 180; player.y = 180; updateHUD();
-            if (animationFrameId) cancelAnimationFrame(animationFrameId); gameLoop();
-        }
-
-        function exitGame() {
-            playSound('select'); gameActive = false; if (animationFrameId) cancelAnimationFrame(animationFrameId);
-            document.getElementById('game-ui').classList.add('hidden'); document.getElementById('modal-pause').classList.add('hidden'); document.getElementById('main-menu').classList.remove('hidden');
-        }
-
-        // --- ANIMACIÓN ECLIPSE FINAL ---
-        function triggerFinalEclipse(isVIP) {
-            gameActive = false; playSound('win'); document.getElementById('game-ui').classList.add('hidden'); document.getElementById('eclipse-final-screen').classList.remove('hidden');
-            if (isVIP) { document.getElementById('final-message-text').innerHTML = '🌟 <strong>¡FINAL VIP EXCLUSIVO!</strong> Estás presenciando el histórico eclipse de 2026 desde la cima de tu colosal <strong>Burj Khalifa de la Mancha</strong> de 100,000 dólares. ¡Simplemente espectacular!'; document.getElementById('final-message-text').className = "text-amber-400 text-xl font-bold font-sans-modern"; }
-            const fcanvas = document.getElementById('eclipseAnimationCanvas'); const fctx = fcanvas.getContext('2d');
-            fcanvas.width = 640; fcanvas.height = 360; let progress = 0;
-            function renderEclipse() {
-                fctx.clearRect(0, 0, fcanvas.width, fcanvas.height);
-                const bg = fctx.createLinearGradient(0,0,0,fcanvas.height); const r = Math.max(8, 28 - progress*26); const b = Math.max(12, 55 - progress*48);
-                bg.addColorStop(0, `rgb(${r}, ${r}, ${b})`); bg.addColorStop(1, '#000'); fctx.fillStyle = bg; fctx.fillRect(0,0,fcanvas.width,fcanvas.height);
-                if (progress > 0.6) { fctx.fillStyle = `rgba(255,255,255,${(progress-0.6)*2.5})`; [[80,100],[540,80],[120,280],[480,220]].forEach(p => { fctx.beginPath(); fctx.arc(p[0],p[1],1.5,0,Math.PI*2); fctx.fill(); }); }
-                fctx.fillStyle = '#050b18'; fctx.beginPath(); fctx.moveTo(0,360); fctx.lineTo(150,240); fctx.lineTo(300,300); fctx.lineTo(640,360); fctx.fill();
-                if (isVIP) { fctx.fillStyle = '#475569'; fctx.fillRect(140, 100, 30, 180); fctx.fillStyle = '#cbd5e1'; fctx.fillRect(153, 50, 4, 50); fctx.fillStyle = '#fef08a'; for(let y=110; y<260; y+=15) { fctx.fillRect(145, y, 6, 6); fctx.fillRect(159, y, 6, 6); } }
-                const cx = fcanvas.width/2; const cy = 130; const rad = 55;
-                if (progress > 0.8) { const alpha = (progress-0.8)*5; fctx.shadowColor = 'rgba(251,191,36,0.8)'; fctx.shadowBlur = 35; fctx.fillStyle = `rgba(255,253,245,${alpha})`; fctx.beginPath(); fctx.arc(cx,cy,rad+8,0,Math.PI*2); fctx.fill(); fctx.shadowBlur = 0; }
-                fctx.fillStyle = '#fbbf24'; fctx.beginPath(); fctx.arc(cx, cy, rad, 0, Math.PI*2); fctx.fill(); const mx = cx - (1-progress)*(rad*2.3); fctx.fillStyle = '#010413'; fctx.beginPath(); fctx.arc(mx, cy, rad-0.5, 0, Math.PI*2); fctx.fill();
-                if (progress < 1) progress += 0.0035; requestAnimationFrame(renderEclipse);
-            }
-            renderEclipse();
-        }
-    </script>
 </body>
 </html>
