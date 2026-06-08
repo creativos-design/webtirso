@@ -1255,6 +1255,22 @@
     inset: 0;
     background: var(--paper);
     transform: translate(18%, 0);
+    animation: eclipse-animation 4s ease-in-out infinite;
+  }
+  
+  @keyframes eclipse-animation {
+    0% {
+      transform: translate(-50%, 0);
+      opacity: 0.3;
+    }
+    50% {
+      transform: translate(18%, 0);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(80%, 0);
+      opacity: 0.3;
+    }
   }
   
   /* ============= INTRO PARAGRAPH WITH DROPCAP ============= */
@@ -1315,6 +1331,128 @@
     text-transform: uppercase;
   }
   
+  /* ============= SANTIAGO SECTION ============= */
+  .santiago-simple-wrap {
+    max-width: 1240px;
+    margin: 0 auto 80px;
+    padding: 0 40px;
+  }
+
+  .santiago-wrap {
+    background: var(--tirso-blue-pale);
+    border: 1px solid var(--tirso-blue-line);
+    border-radius: 3px;
+    padding: 40px;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+  
+  .santiago-badge {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    color: var(--tirso-blue-dark);
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+  
+  .santiago-title {
+    font-family: var(--serif-display);
+    font-size: clamp(1.6rem, 2.5vw, 2rem);
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+  
+  .santiago-subtitle {
+    font-family: var(--serif-body);
+    font-size: 0.95rem;
+    color: var(--ink);
+    line-height: 1.7;
+  }
+  
+  @media (max-width: 768px) {
+    .santiago-simple-wrap { padding: 0 20px; }
+    .santiago-wrap { padding: 32px 20px; }
+  }
+
+  /* ============= PROXECTOR ESTENOSCOPICO ============= */
+  .proxector-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    margin-bottom: 80px;
+  }
+  
+  .proxector-content h3 {
+    font-family: var(--serif-display);
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 20px;
+    line-height: 1.2;
+  }
+  
+  .proxector-content h3 em {
+    font-style: italic;
+    color: var(--tirso-blue);
+  }
+  
+  .proxector-text {
+    font-family: var(--serif-body);
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    line-height: 1.8;
+    margin-bottom: 24px;
+  }
+  
+  .proxector-features {
+    list-style: none;
+    margin: 24px 0;
+  }
+  
+  .proxector-features li {
+    font-family: var(--serif-body);
+    font-size: 0.95rem;
+    color: var(--ink);
+    padding: 12px 0;
+    padding-left: 24px;
+    position: relative;
+  }
+  
+  .proxector-features li::before {
+    content: '◆';
+    position: absolute;
+    left: 0;
+    color: var(--tirso-blue);
+  }
+  
+  .proxector-visual {
+    background: var(--paper-warm);
+    border: 1px solid var(--paper-line);
+    border-radius: 3px;
+    padding: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+  }
+  
+  .proxector-svg {
+    max-width: 100%;
+    height: auto;
+    width: 100%;
+  }
+  
+  @media (max-width: 1000px) {
+    .proxector-wrap { grid-template-columns: 1fr; gap: 40px; }
+    .proxector-visual { min-height: 300px; }
+    .santiago-wrap { padding: 32px 20px; }
+  }
+  
 </style>
 </head>
 <body>
@@ -1367,10 +1505,19 @@
   </div>
 </section>
 
+<!-- ============ SANTIAGO 2026 ============ -->
+<div class="santiago-simple-wrap">
+  <div class="santiago-wrap">
+    <div class="santiago-badge">Retos STEM · Polos Eclipsados 2026</div>
+    <h3 class="santiago-title">Seleccionados para a exposición en Santiago de Compostela</h3>
+    <p class="santiago-subtitle">O noso proxecto foi seleccionado para ser presentado xunto con outros 19 centros educativos de Galicia nunha exposición de divulgación científica da Xunta de Galicia. Levaremos os tres produtos do proxecto: o experimento Arduino con sensores, a web interactiva, o programa de radio e o proxector estenoscopico para observación segura da eclipse.</p>
+  </div>
+</div>
+
 <!-- ============ COUNTDOWN ============ -->
 <section class="countdown-section">
   <div class="eclipse-glyph" aria-hidden="true"></div>
-  <p class="countdown-label-top">Conta atrás ata a <strong>totalidade</strong> · 12 de agosto de 2026, 20:30 CEST</p>
+  <p class="countdown-label-top">Conta atrás ata <strong>o evento</strong> · 12 de agosto de 2026, 20:30 CEST</p>
   
   <div class="countdown" id="countdown" role="timer" aria-live="polite">
     <div class="countdown-unit">
@@ -1542,6 +1689,108 @@
 
 </section>
 
+<!-- ============ PROXECTOR ESTENOSCOPICO ============ -->
+<section class="block" id="proxector">
+  <div class="block-header">
+    <div class="block-num">05 · Material</div>
+    <h2>Proxector <em>estenoscopico</em> · un produto para Santiago.</h2>
+  </div>
+  
+  <p class="lead">Recurso didáctico deseñado e cortado con láser para permitir a observación segura da eclipse mediante 4 experimentos diferentes. Este produto será presentado en Santiago xunto cos nosos outros traballos.</p>
+  
+  <div class="proxector-wrap">
+    <div class="proxector-content">
+      <h3>Tarxeta de observación segura da eclipse</h3>
+      
+      <p class="proxector-text">Os nosos estudantes deseñaron unha tarxeta con 4 buratos piñeiro de tamaños diferentes (1 mm, 2 mm, 3 mm e unha matriz de 9 buratos) para estudar como a forma e tamaño do burato afecta á proyección da sombra da eclipse.</p>
+      
+      <ul class="proxector-features">
+        <li><strong>Ø 1 mm:</strong> Proxección nítida do disco solar</li>
+        <li><strong>Ø 2 mm:</strong> Proxección con máis luz e menos detalle</li>
+        <li><strong>Ø 3 mm:</strong> Proxección máis luminosa pero difusa</li>
+        <li><strong>Matriz 3×3:</strong> 9 minúsculas imaxes da eclipse</li>
+      </ul>
+      
+      <p class="proxector-text"><strong>Método de uso:</strong> Volta as costas ao Sol, sostén a tarxeta sobre una folla branca no chan, e observa como a sombra dos buratos proxecta a forma do Sol eclipsado. Completamente seguro — nunca ollas directamente o Sol.</p>
+    </div>
+    
+    <div class="proxector-visual">
+      <svg class="proxector-svg" xmlns="http://www.w3.org/2000/svg"
+           viewBox="0 0 150 100" preserveAspectRatio="xMidYMid meet">
+        <!-- CORTES (vermello) -->
+        <g id="CORTE" stroke="#FF0000" stroke-width="0.1" fill="none">
+          <rect x="0.5" y="0.5" width="149" height="99" rx="6" ry="6"/>
+          <circle cx="142" cy="8" r="2.5"/>
+          <circle cx="37.5" cy="48" r="0.5"/>
+          <circle cx="112.5" cy="48" r="1.0"/>
+          <circle cx="37.5" cy="72" r="1.5"/>
+          <g>
+            <circle cx="108" cy="68"   r="0.5"/>
+            <circle cx="112.5" cy="68" r="0.5"/>
+            <circle cx="117" cy="68"   r="0.5"/>
+            <circle cx="108" cy="72"   r="0.5"/>
+            <circle cx="112.5" cy="72" r="0.5"/>
+            <circle cx="117" cy="72"   r="0.5"/>
+            <circle cx="108" cy="76"   r="0.5"/>
+            <circle cx="112.5" cy="76" r="0.5"/>
+            <circle cx="117" cy="76"   r="0.5"/>
+          </g>
+        </g>
+        
+        <!-- GRAVADO (negro) -->
+        <g id="GRAVADO" fill="#000000">
+          <text x="75" y="11" text-anchor="middle" font-family="Georgia, serif" font-size="6" font-weight="bold" letter-spacing="0.8">ECLIPSE 2026</text>
+          <text x="75" y="16.5" text-anchor="middle" font-family="Georgia, serif" font-size="2.8" font-style="italic">Proxector estenopeico · observación segura</text>
+          
+          <g transform="translate(24,12)" stroke="#000" stroke-width="0.3" fill="none">
+            <line x1="0" y1="-4" x2="0" y2="-5.2"/>
+            <line x1="0" y1="4"  x2="0" y2="5.2"/>
+            <line x1="-4" y1="0" x2="-5.2" y2="0"/>
+            <line x1="4"  y1="0" x2="5.2" y2="0"/>
+            <circle cx="0" cy="0" r="3"/>
+            <circle cx="0" cy="0" r="2.2" fill="#000"/>
+          </g>
+          
+          <g transform="translate(126,12)" stroke="#000" stroke-width="0.3" fill="none">
+            <line x1="0" y1="-4" x2="0" y2="-5.2"/>
+            <line x1="0" y1="4"  x2="0" y2="5.2"/>
+            <line x1="-4" y1="0" x2="-5.2" y2="0"/>
+            <line x1="4"  y1="0" x2="5.2" y2="0"/>
+            <circle cx="0" cy="0" r="3"/>
+            <circle cx="0" cy="0" r="2.2" fill="#000"/>
+          </g>
+          
+          <line x1="20" y1="22" x2="130" y2="22" stroke="#000" stroke-width="0.3"/>
+          
+          <text x="75" y="28" text-anchor="middle" font-family="Georgia, serif" font-size="3.4" font-weight="bold">COMPARA OS 4 BURATOS</text>
+          
+          <g stroke="#000" stroke-width="0.2">
+            <line x1="75" y1="33" x2="75" y2="83"/>
+            <line x1="15" y1="60" x2="135" y2="60"/>
+          </g>
+          
+          <text x="22" y="40" font-family="Georgia, serif" font-size="3.4" font-weight="bold">A</text>
+          <text x="29" y="40" font-family="Georgia, serif" font-size="2.8">Ø 1 mm</text>
+          <text x="97" y="40" font-family="Georgia, serif" font-size="3.4" font-weight="bold">B</text>
+          <text x="104" y="40" font-family="Georgia, serif" font-size="2.8">Ø 2 mm</text>
+          <text x="22" y="66" font-family="Georgia, serif" font-size="3.4" font-weight="bold">C</text>
+          <text x="29" y="66" font-family="Georgia, serif" font-size="2.8">Ø 3 mm</text>
+          <text x="97" y="66" font-family="Georgia, serif" font-size="3.4" font-weight="bold">D</text>
+          <text x="104" y="66" font-family="Georgia, serif" font-size="2.8">9 buratos</text>
+          
+          <line x1="20" y1="83" x2="130" y2="83" stroke="#000" stroke-width="0.3"/>
+          
+          <text x="75" y="87" text-anchor="middle" font-family="Georgia, serif" font-size="2.4">1. Volta as costas ao Sol. 2. Sostén a tarxeta sobre un papel branco.</text>
+          <text x="75" y="90" text-anchor="middle" font-family="Georgia, serif" font-size="2.4">3. Observa a forma do Sol eclipsado na sombra.</text>
+          <text x="75" y="94.5" text-anchor="middle" font-family="Georgia, serif" font-size="2.8" font-weight="bold">ATENCIÓN — NUNCA mires ao Sol.</text>
+          
+          <text x="75" y="98.5" text-anchor="middle" font-family="Georgia, serif" font-size="2.2" letter-spacing="0.5">CPR TIRSO DE MOLINA · FERROL · POLOS ECLIPSADOS 2026</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
 <!-- ============ QUOTE ============ -->
 <aside class="quote">
   <div class="quote-inner">
@@ -1649,7 +1898,7 @@
 <!-- ============ EQUIPO ============ -->
 <section class="block" id="equipo">
   <div class="block-header">
-    <div class="block-num">05 · Datos</div>
+    <div class="block-num">06 · Datos</div>
     <h2>Datos <em>identificativos</em>.</h2>
   </div>
   
